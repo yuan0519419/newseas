@@ -244,13 +244,13 @@ onUnmounted(() => {
   font-size: 24px;
   font-weight: bold;
   margin-bottom: 5px;
-  color: white;
-  text-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+  color: rgba(255, 255, 255, 0.7);
+  text-shadow: 0 0 5px rgba(59, 130, 246, 0.3);
 }
 
 .subtitle {
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .status-info {

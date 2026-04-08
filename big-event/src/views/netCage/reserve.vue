@@ -371,7 +371,7 @@ const deleteReserve = (row) => {
     left: 0;
     right: 0;
     height: 2px;
-    background: linear-gradient(90deg, #8b5cf6, #a78bfa, #8b5cf6);
+    background: linear-gradient(90deg, #60A5FA, #3B82F6, #8B5CF6);
     opacity: 0.8;
   }
 
@@ -393,9 +393,9 @@ const deleteReserve = (row) => {
     align-items: center;
     justify-content: space-between;
     padding: var(--spacing-lg);
-    background: rgba(30, 27, 75, 0.8);
+    background: rgba(17, 24, 39, 0.6);
     backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(139, 92, 246, 0.2);
+    border-bottom: 1px solid rgba(139, 92, 246, 0.3);
     position: relative;
     z-index: 1;
     
@@ -437,50 +437,44 @@ const deleteReserve = (row) => {
   z-index: 1;
   
   .el-table__header {
-    background: linear-gradient(90deg, rgba(30, 27, 75, 0.9) 0%, rgba(49, 46, 129, 0.9) 100%) !important;
+    background: var(--tech-blue-800) !important;
     
     th {
-      background: transparent !important;
+      background: var(--tech-blue-800) !important;
       color: #a78bfa !important;
       font-weight: 600;
-      border-bottom: 1px solid rgba(139, 92, 246, 0.4);
-      box-shadow: 0 1px 0 rgba(139, 92, 246, 0.2);
+      border-bottom: 1px solid rgba(139, 92, 246, 0.3);
       
       .cell {
         color: #a78bfa !important;
         font-weight: 600;
-        text-shadow: 0 0 10px rgba(139, 92, 246, 0.3);
       }
     }
   }
   
   .el-table__body {
     tr {
-      background: linear-gradient(90deg, rgba(30, 27, 75, 0.6) 0%, rgba(49, 46, 129, 0.6) 100%) !important;
+      background: rgba(17, 24, 39, 0.4) !important;
       color: #c4b5fd !important;
-      border-radius: 8px;
-      margin: 0 8px;
       
       &:hover > td {
-        background: linear-gradient(90deg, rgba(139, 92, 246, 0.1) 0%, rgba(139, 92, 246, 0.05) 100%) !important;
-        box-shadow: 0 0 15px rgba(139, 92, 246, 0.2);
+        background: rgba(139, 92, 246, 0.1) !important;
       }
       
       td {
         background: transparent !important;
-        border-bottom: 1px solid rgba(139, 92, 246, 0.2);
+        border-bottom: 1px solid rgba(139, 92, 246, 0.1);
         color: #c4b5fd !important;
         
         .cell {
           color: #c4b5fd !important;
-          text-shadow: 0 0 5px rgba(139, 92, 246, 0.2);
         }
       }
     }
   }
   
   .el-table__empty-block {
-    background: rgba(30, 27, 75, 0.6) !important;
+    background: rgba(17, 24, 39, 0.4) !important;
     color: #c4b5fd;
   }
 }

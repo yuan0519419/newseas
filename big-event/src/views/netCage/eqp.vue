@@ -371,7 +371,7 @@ const deleteEqp = (row) => {
     left: 0;
     right: 0;
     height: 2px;
-    background: linear-gradient(90deg, #f97316, #fb923c, #f97316);
+    background: linear-gradient(90deg, #60A5FA, #3B82F6, #8B5CF6);
     opacity: 0.8;
   }
 
@@ -393,9 +393,9 @@ const deleteEqp = (row) => {
     align-items: center;
     justify-content: space-between;
     padding: var(--spacing-lg);
-    background: rgba(26, 17, 15, 0.8);
+    background: rgba(17, 24, 39, 0.6);
     backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(249, 115, 22, 0.2);
+    border-bottom: 1px solid rgba(249, 115, 22, 0.3);
     position: relative;
     z-index: 1;
     
@@ -437,50 +437,44 @@ const deleteEqp = (row) => {
   z-index: 1;
   
   .el-table__header {
-    background: linear-gradient(90deg, rgba(26, 17, 15, 0.9) 0%, rgba(45, 29, 26, 0.9) 100%) !important;
+    background: var(--tech-blue-800) !important;
     
     th {
-      background: transparent !important;
+      background: var(--tech-blue-800) !important;
       color: #fb923c !important;
       font-weight: 600;
-      border-bottom: 1px solid rgba(249, 115, 22, 0.4);
-      box-shadow: 0 1px 0 rgba(249, 115, 22, 0.2);
+      border-bottom: 1px solid rgba(249, 115, 22, 0.3);
       
       .cell {
         color: #fb923c !important;
         font-weight: 600;
-        text-shadow: 0 0 10px rgba(249, 115, 22, 0.3);
       }
     }
   }
   
   .el-table__body {
     tr {
-      background: linear-gradient(90deg, rgba(26, 17, 15, 0.6) 0%, rgba(45, 29, 26, 0.6) 100%) !important;
+      background: rgba(17, 24, 39, 0.4) !important;
       color: #fdba74 !important;
-      border-radius: 8px;
-      margin: 0 8px;
       
       &:hover > td {
-        background: linear-gradient(90deg, rgba(249, 115, 22, 0.1) 0%, rgba(249, 115, 22, 0.05) 100%) !important;
-        box-shadow: 0 0 15px rgba(249, 115, 22, 0.2);
+        background: rgba(249, 115, 22, 0.1) !important;
       }
       
       td {
         background: transparent !important;
-        border-bottom: 1px solid rgba(249, 115, 22, 0.2);
+        border-bottom: 1px solid rgba(249, 115, 22, 0.1);
         color: #fdba74 !important;
         
         .cell {
           color: #fdba74 !important;
-          text-shadow: 0 0 5px rgba(249, 115, 22, 0.2);
         }
       }
     }
   }
   
   .el-table__empty-block {
-    background: rgba(26, 17, 15, 0.6) !important;
+    background: rgba(17, 24, 39, 0.4) !important;
     color: #fdba74;
   }
 }
