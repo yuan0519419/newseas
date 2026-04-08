@@ -37,7 +37,7 @@
             </div>
           </div>
           
-       
+        
         </el-card>
       </el-col>
 
@@ -51,7 +51,7 @@
           </template>
           <div ref="chart" class="chart-container"></div>
           <div class="card-footer">
-            <button @click="refreshData" class="px-4 py-2 bg-blue-500 text-white rounded">刷新数据</button>
+            <el-button type="primary" @click="refreshData">刷新数据</el-button>
           </div>
         </el-card>
       </el-col>
@@ -129,7 +129,7 @@ onMounted(() => {
   
   const myChart = echarts.init(chart.value);
   const option = {
-    color: ['#37A2DA', '#67E0E3', '#9FE6B8', '#FFDB5C', '#ff9f7f', '#fb7293', '#E062AE'],
+    color: ['#3B82F6', '#60A5FA', '#93C5FD', '#BFDBFE', '#DBEAFE'],
     grid: {
       left: 10,
       right: 10,
@@ -150,11 +150,19 @@ onMounted(() => {
       orient: 'horizontal',
       bottom: '5%',
       left: 'center',
-      data: ['鱼1', '鱼2', '鱼3', '鱼4', '鱼5']
+      data: ['鱼1', '鱼2', '鱼3', '鱼4', '鱼5'],
+      textStyle: {
+        color: 'rgba(147, 197, 253, 0.8)'
+      }
     },
     tooltip: {
-      show: false,  // 显示提示框，方便查看数据
-      trigger: 'axis'
+      show: true,  // 显示提示框，方便查看数据
+      trigger: 'axis',
+      backgroundColor: 'rgba(17, 24, 39, 0.9)',
+      borderColor: 'rgba(59, 130, 246, 0.4)',
+      textStyle: {
+        color: 'rgba(147, 197, 253, 1)'
+      }
     }
   };
   
@@ -206,16 +214,24 @@ onUnmounted(() => {
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@use '@/assets/main.scss';
+
 .fish-monitoring-container {
   padding: 20px;
-  background-color: #f5f7fa;
+  background: var(--tech-blue-900);
+  min-height: 100vh;
 }
 
 .title-card {
   margin-bottom: 20px;
-  background-color: #1e88e5;
-  color: white;
+  background: var(--gradient-primary) !important;
+  border: var(--border-tech) !important;
+  box-shadow: var(--shadow-md);
+  
+  .el-card__header {
+    border-bottom: none !important;
+  }
 }
 
 .header-content {
@@ -228,6 +244,8 @@ onUnmounted(() => {
   font-size: 24px;
   font-weight: bold;
   margin-bottom: 5px;
+  color: white;
+  text-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
 }
 
 .subtitle {
@@ -244,6 +262,7 @@ onUnmounted(() => {
 .update-time {
   margin-left: 10px;
   font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .video-card {
@@ -251,13 +270,20 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   height: 100%;
+  background: rgba(17, 24, 39, 0.6) !important;
+  border: var(--border-tech) !important;
+  box-shadow: var(--shadow-md);
+  
+  .el-card__header {
+    border-bottom: 1px solid rgba(59, 130, 246, 0.3) !important;
+  }
 }
 
 .video-title {
   margin: 0;
   font-size: 1.25rem;
   font-weight: bold;
-  color: #333;
+  color: var(--tech-blue-600);
 }
 
 .video-wrapper {
@@ -277,6 +303,7 @@ onUnmounted(() => {
   background-color: #000;
   border-radius: 4px;
   overflow: hidden;
+  border: 1px solid rgba(59, 130, 246, 0.3);
 }
 
 video {
@@ -288,20 +315,17 @@ video {
   object-fit: contain;
 }
 
-.video-controls {
-  margin-top: 15px;
-  padding: 10px 0;
-}
-
-.control-buttons {
-  display: flex;
-  justify-content: space-around;
-}
-
 .chart-card {
   height: 100%;
   display: flex;
   flex-direction: column;
+  background: rgba(17, 24, 39, 0.6) !important;
+  border: var(--border-tech) !important;
+  box-shadow: var(--shadow-md);
+  
+  .el-card__header {
+    border-bottom: 1px solid rgba(59, 130, 246, 0.3) !important;
+  }
 }
 
 .card-header {
@@ -314,12 +338,16 @@ video {
   margin: 0;
   font-size: 1.25rem;
   font-weight: bold;
-  color: #333;
+  color: var(--tech-blue-600);
 }
 
 .chart-container {
   flex: 1;
   min-height: 400px;
+  background: rgba(10, 14, 26, 0.6);
+  border-radius: 4px;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  padding: 10px;
 }
 
 .card-footer {
@@ -328,16 +356,16 @@ video {
   justify-content: center;
 }
 
-button {
-  padding: 0.5rem 1rem;
-  background-color: #3b82f6;
-  color: white;
-  border-radius: 0.25rem;
-  border: none;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #2563eb;
+// 按钮样式
+:deep(.el-button--primary) {
+  background: var(--gradient-primary);
+  border-color: transparent;
+  color: var(--tech-blue-900);
+  font-weight: 600;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--glow-md);
+  }
 }
 </style>    

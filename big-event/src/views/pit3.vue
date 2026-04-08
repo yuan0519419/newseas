@@ -476,18 +476,25 @@ onUnmounted(() => {
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@use '@/assets/main.scss';
+
 .fish-monitoring-container {
   padding: 20px;
   min-height: 100vh;
+  background: var(--tech-blue-900);
 }
 
 .title-card {
   margin-bottom: 10px;
-  background-color: #4fc3f7;
-  color: white;
+  background: var(--gradient-primary) !important;
+  border: var(--border-tech) !important;
+  box-shadow: var(--shadow-md);
+  
+  .el-card__header {
+    border-bottom: none !important;
+  }
 }
-
 
 .header-content {
   display: flex;
@@ -499,6 +506,8 @@ onUnmounted(() => {
   font-size: 30px;
   font-weight: bold;
   margin-bottom: 5px;
+  color: white;
+  text-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
 }
 
 .marine-ranch-container {
@@ -506,18 +515,24 @@ onUnmounted(() => {
   align-items: center;
   justify-content: space-between;
   margin: 5px 0;
+  padding: 10px;
+  background: rgba(17, 24, 39, 0.6);
+  border: var(--border-tech);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
 }
 
 .marine-ranch-name {
   font-size: 24px;
   font-weight: bold;
   text-align: left;
-  color: #333;
+  color: var(--tech-blue-600);
   padding: 10px;
-  background-color: #f5f5f5;
+  background: rgba(10, 14, 26, 0.6);
   border-radius: 8px;
   flex-grow: 1;
   margin-right: 10px;
+  border: 1px solid rgba(59, 130, 246, 0.3);
 }
 
 .signal-buttons {
@@ -539,6 +554,7 @@ onUnmounted(() => {
 .update-time {
   margin-left: 10px;
   font-size: 16px;
+  color: rgba(255, 255, 255, 0.8);
 }
 
 /* 监测区域样式 */
@@ -554,11 +570,20 @@ onUnmounted(() => {
   margin-bottom: 10px;
   overflow: hidden;
   position: relative;
-}
-
-/* 移除水波纹背景效果 */
-.monitoring-area::before {
-  content: none;
+  border: var(--border-tech);
+  box-shadow: var(--shadow-md);
+  
+  /* 添加科技风覆盖层 */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(10, 14, 26, 0.3);
+    z-index: 0;
+  }
 }
 
 .reef-container {
@@ -600,25 +625,27 @@ onUnmounted(() => {
   transform: translate(-50%, -50%);
   width: 50px;
   height: 50px;
-  background-color: white;
+  background: rgba(17, 24, 39, 0.8);
+  border: 2px solid rgba(59, 130, 246, 0.4);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
   z-index: 10;
 }
 
 .indicator-icon {
   font-size: 36px;
-  color: #1989fa; /* 蓝色 - 默认状态 */
+  color: #3B82F6; /* 蓝色 - 默认状态 */
   transition: color 0.3s ease, transform 0.3s ease;
+  filter: drop-shadow(0 0 5px rgba(59, 130, 246, 0.5));
 }
 
 .indicator-icon.indicator-active {
-  color: #ff4d4f; /* 红色 - 激活状态 */
+  color: #EF4444; /* 红色 - 激活状态 */
   animation: pulse 0.8s infinite;
-  filter: drop-shadow(0 0 5px #ff4d4f); /* 添加红色辉光效果 */
+  filter: drop-shadow(0 0 10px rgba(239, 68, 68, 0.8)); /* 添加红色辉光效果 */
 }
 
 @keyframes pulse {
@@ -634,17 +661,19 @@ onUnmounted(() => {
 }
 
 .reef-info {
-  background-color: #c7f4c8; /* 设置为绿色背景 */
-  color: white; /* 文字颜色改为白色以确保可读性 */
+  background: rgba(17, 24, 39, 0.8); /* 深色背景 */
+  color: var(--tech-blue-300); /* 浅蓝色文字 */
   padding: 10px 20px; /* 增加内边距，使卡片更宽 */
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
   text-align: center;
   width: 250px;
   /* 独立定位信息卡片，不影响指示灯 */
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
+  border: 1px solid rgba(59, 130, 246, 0.4);
+  backdrop-filter: blur(10px);
 }
 
 /* 鱼礁1的信息卡片 - 固定在指示灯右侧，进一步调近距离 */
@@ -659,8 +688,9 @@ onUnmounted(() => {
 
 .reef-info h3 {
   margin: 0 0 10px 0;
-  color: #1e88e5;
+  color: var(--tech-blue-600);
   font-size: 18px;
+  text-shadow: 0 0 5px rgba(59, 130, 246, 0.5);
 }
 
 .fish-detection-info {
@@ -669,14 +699,14 @@ onUnmounted(() => {
 }
 
 .reef-info .fish-info {
-  color: #333;
+  color: var(--tech-blue-400);
   font-weight: bold;
   font-size: 18px;
   margin-bottom: 5px;
 }
 
 .reef-info .time-info {
-  color: #333;
+  color: var(--tech-blue-500);
   font-size: 14px;
 }
 
@@ -688,14 +718,14 @@ onUnmounted(() => {
 
 /* 保留鱼礁信息样式 */
 .fish-info {
-  color: #333;
+  color: var(--tech-blue-400);
   font-weight: bold;
   font-size: 16px;
   margin-bottom: 8px;
 }
 
 .time-info {
-  color: #666;
+  color: var(--tech-blue-500);
   font-size: 14px;
 }
 
@@ -728,18 +758,46 @@ onUnmounted(() => {
 .no-history {
   text-align: center;
   padding: 40px 0;
-  color: #909399;
+  color: var(--tech-blue-400);
   font-size: 14px;
 }
 
 /* 表格样式优化 */
 .history-records-container .el-table {
   font-size: 14px;
-}
-
-.history-records-container .el-table th {
-  background-color: #f5f7fa;
-  font-weight: 600;
+  background: rgba(17, 24, 39, 0.6) !important;
+  border: var(--border-tech) !important;
+  
+  th {
+    background: var(--tech-blue-800) !important;
+    color: var(--tech-blue-600) !important;
+    font-weight: 600;
+    border-bottom: 1px solid rgba(59, 130, 246, 0.3) !important;
+    
+    .cell {
+      color: var(--tech-blue-600) !important;
+      font-weight: 600;
+    }
+  }
+  
+  tr {
+    background: rgba(17, 24, 39, 0.4) !important;
+    color: var(--tech-blue-400) !important;
+    
+    &:hover > td {
+      background: rgba(59, 130, 246, 0.1) !important;
+    }
+    
+    td {
+      background: transparent !important;
+      border-bottom: 1px solid rgba(59, 130, 246, 0.1) !important;
+      color: var(--tech-blue-300) !important;
+      
+      .cell {
+        color: var(--tech-blue-300) !important;
+      }
+    }
+  }
 }
 
 /* 鱼礁视频播放器样式 */
@@ -752,22 +810,25 @@ onUnmounted(() => {
 .video-title {
   font-size: 14px;
   font-weight: 600;
-  color: #333;
+  color: var(--tech-blue-600);
   margin-bottom: 10px;
   text-align: center;
+  text-shadow: 0 0 5px rgba(59, 130, 246, 0.5);
 }
 
 .video-wrapper {
   width: 100%;
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+  border: 1px solid rgba(59, 130, 246, 0.3);
 }
 
 .monitoring-video {
   width: 100%;
   height: auto;
   display: block;
+  background: #000;
 }
 
 /* 调整鱼礁一的布局 */
@@ -784,5 +845,58 @@ onUnmounted(() => {
   top: 120px;
   left: -10px;
   /* 移除transform居中，使用固定像素定位 */
+}
+
+/* 按钮样式 */
+:deep(.el-button--primary) {
+  background: var(--gradient-primary);
+  border-color: transparent;
+  color: var(--tech-blue-900);
+  font-weight: 600;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--glow-md);
+  }
+}
+
+:deep(.el-button--warning) {
+  background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+  border-color: transparent;
+  color: var(--tech-blue-900);
+  font-weight: 600;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+  }
+}
+
+/* 对话框样式 */
+:deep(.el-dialog) {
+  background: var(--tech-blue-900) !important;
+  border: var(--border-tech) !important;
+  box-shadow: var(--shadow-lg) !important;
+  border-radius: var(--radius-lg) !important;
+  
+  .el-dialog__header {
+    background: rgba(17, 24, 39, 0.6) !important;
+    border-bottom: 1px solid rgba(59, 130, 246, 0.3) !important;
+    
+    .el-dialog__title {
+      color: var(--tech-blue-600) !important;
+      font-weight: 600 !important;
+    }
+  }
+  
+  .el-dialog__body {
+    background: transparent !important;
+    color: var(--tech-blue-300) !important;
+  }
+  
+  .el-dialog__footer {
+    background: rgba(17, 24, 39, 0.6) !important;
+    border-top: 1px solid rgba(59, 130, 246, 0.3) !important;
+  }
 }
 </style>

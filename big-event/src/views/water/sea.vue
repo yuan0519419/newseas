@@ -338,7 +338,7 @@ const deleteSeaData = (row) => {
     <el-table-column label="洋流流速" prop="currVel"></el-table-column>
     <el-table-column label="氧化还原电位" prop="orp"></el-table-column>
     <el-table-column label="采样时间" prop="sampleTime"  width="100"></el-table-column>
-      <el-table-column label="操作" width="100">
+      <el-table-column label="操作" width="160">
         <template #default="{ row }">
           <el-button
             :icon="Edit"
@@ -346,6 +346,7 @@ const deleteSeaData = (row) => {
             plain
             type="primary"
             @click="showDialog1(row)"
+            size="small"
           ></el-button>
           <el-button
             :icon="Delete"
@@ -353,6 +354,8 @@ const deleteSeaData = (row) => {
             plain
             type="danger"
             @click="deleteSeaData(row)"
+            size="small"
+            style="margin-left: 12px"
           ></el-button>
         </template>
       </el-table-column>
@@ -482,14 +485,246 @@ const deleteSeaData = (row) => {
 </template>
 
 <style lang="scss" scoped>
+@use '@/assets/main.scss';
+
 .page-container {
   min-height: 100%;
   box-sizing: border-box;
+  background: var(--tech-blue-900);
+  border: var(--border-tech);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--gradient-primary);
+    opacity: 0.5;
+  }
 
   .header {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    padding: var(--spacing-lg);
+    background: rgba(17, 24, 39, 0.6);
+    backdrop-filter: blur(10px);
+    
+    span {
+      font-size: 18px;
+      font-weight: 600;
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .extra {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+  }
+}
+
+// 表格容器样式
+:deep(.el-table) {
+  background: transparent !important;
+  border: none;
+  color: var(--tech-blue-400);
+  
+  .el-table__header {
+    background: var(--tech-blue-800) !important;
+    
+    th {
+      background: var(--tech-blue-800) !important;
+      color: var(--tech-blue-600) !important;
+      font-weight: 600;
+      border-bottom: 1px solid rgba(59, 130, 246, 0.3);
+      
+      .cell {
+        color: var(--tech-blue-600) !important;
+        font-weight: 600;
+      }
+    }
+  }
+  
+  .el-table__body {
+    tr {
+      background: rgba(17, 24, 39, 0.4) !important;
+      color: var(--tech-blue-400) !important;
+      
+      &:hover > td {
+        background: rgba(59, 130, 246, 0.1) !important;
+      }
+      
+      td {
+        background: transparent !important;
+        border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+        color: var(--tech-blue-300) !important;
+        
+        .cell {
+          color: var(--tech-blue-300) !important;
+        }
+      }
+    }
+  }
+  
+  .el-table__empty-block {
+    background: rgba(17, 24, 39, 0.4) !important;
+  }
+}
+
+// 按钮样式优化
+:deep(.el-button) {
+  &.el-button--primary {
+    background: var(--gradient-primary);
+    border-color: transparent;
+    color: var(--tech-blue-900);
+    font-weight: 600;
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--glow-md);
+    }
+  }
+  
+  &.el-button--danger {
+    background: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
+    border-color: transparent;
+    color: white;
+    font-weight: 600;
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+    }
+  }
+  
+  &.el-button--default {
+    background: rgba(17, 24, 39, 0.6);
+    border: var(--border-tech);
+    color: var(--tech-blue-400);
+    
+    &:hover {
+      border-color: var(--tech-blue-500);
+      background: rgba(59, 130, 246, 0.1);
+    }
+  }
+}
+
+// 日期选择器样式优化
+:deep(.el-date-editor) {
+  .el-input__inner {
+    background: rgba(10, 14, 26, 0.6);
+    border: var(--border-tech);
+    color: var(--tech-blue-400);
+    
+    &:hover {
+      border-color: rgba(59, 130, 246, 0.4);
+    }
+    
+    &:focus {
+      border-color: var(--tech-blue-500);
+      box-shadow: var(--glow-sm);
+    }
+  }
+  
+  .el-input__prefix {
+    color: var(--tech-blue-400);
+  }
+}
+
+// 对话框样式优化
+:deep(.el-dialog) {
+  background: var(--tech-blue-800);
+  border: var(--border-tech);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  
+  .el-dialog__header {
+    background: rgba(17, 24, 39, 0.6);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(59, 130, 246, 0.3);
+    
+    .el-dialog__title {
+      color: var(--tech-blue-600);
+      font-weight: 600;
+    }
+  }
+  
+  .el-dialog__body {
+    background: transparent;
+    color: var(--tech-blue-300);
+    
+    .el-form-item__label {
+      color: var(--tech-blue-400);
+      font-weight: 500;
+    }
+    
+    .el-input__inner {
+      background: rgba(10, 14, 26, 0.6);
+      border: var(--border-tech);
+      color: var(--tech-blue-300);
+      
+      &:hover {
+        border-color: rgba(59, 130, 246, 0.4);
+      }
+      
+      &:focus {
+        border-color: var(--tech-blue-500);
+        box-shadow: var(--glow-sm);
+      }
+    }
+  }
+  
+  .el-dialog__footer {
+    background: rgba(17, 24, 39, 0.6);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(59, 130, 246, 0.3);
+  }
+}
+
+// 空状态样式优化
+:deep(.el-empty) {
+  .el-empty__description {
+    color: var(--tech-blue-400);
+  }
+}
+
+// 操作按钮样式
+:deep(.el-button--circle) {
+  border-radius: 50%;
+  padding: 8px;
+  
+  &.el-button--primary {
+    background: rgba(59, 130, 246, 0.2);
+    border-color: rgba(59, 130, 246, 0.4);
+    color: var(--tech-blue-400);
+    
+    &:hover {
+      background: rgba(59, 130, 246, 0.4);
+      border-color: var(--tech-blue-500);
+      color: white;
+    }
+  }
+  
+  &.el-button--danger {
+    background: rgba(239, 68, 68, 0.2);
+    border-color: rgba(239, 68, 68, 0.4);
+    color: var(--tech-silver-400);
+    
+    &:hover {
+      background: rgba(239, 68, 68, 0.4);
+      border-color: #ef4444;
+      color: white;
+    }
   }
 }
 </style>

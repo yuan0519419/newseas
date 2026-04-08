@@ -1,13 +1,13 @@
 <template>
   <!-- 新增视频展示区域 -->
   <div class="w-[80%] mx-auto p-4">
-    <!-- 外层白色容器 -->
-    <div class="bg-white rounded-xl shadow-lg p-4 h-[15vh]">
+    <!-- 外层容器 -->
+    <div class="bg-tech-dark rounded-xl shadow-lg p-4 h-[15vh]">
       <!-- 视频容器，使用水平排列样式 -->
       <div class="video-container">
         <!-- 左侧视频 - 使用card容器包裹 -->
         <el-card class="video-card">
-          <div class="video-item relative bg-gray-100 rounded-lg overflow-hidden">
+          <div class="video-item relative bg-tech-darker rounded-lg overflow-hidden">
             <video 
               ref="videoRef1" width="100%" height="auto" controls autoplay loop muted
             >
@@ -19,7 +19,7 @@
         
         <!-- 右侧视频 - 使用card容器包裹 -->
         <el-card class="video-card">
-          <div class="video-item relative bg-gray-100 rounded-lg overflow-hidden">
+          <div class="video-item relative bg-tech-darker rounded-lg overflow-hidden">
             <video 
               ref="videoRef2" 
                width="100%" height="auto" controls autoplay loop muted
@@ -36,8 +36,8 @@
   <!-- 底部数据展示区域 -->
   <div class="h-1/2 p-4 space-y-4">
     <!-- 鱼类品种和数量统计 - 增高高度 -->
-    <div class="bg-white rounded-xl shadow-lg p-4 h-[50%]">
-      <h2 class="text-xl font-bold text-gray-800 mb-4">鱼类品种和数量统计</h2>
+    <div class="bg-tech-dark rounded-xl shadow-lg p-4 h-[50%]">
+      <h2 class="text-xl font-bold text-tech-blue-600 mb-4">鱼类品种和数量统计</h2>
       <div class="overflow-y-auto h-[calc(100%-40px)]">
         <el-table :data="fishStatistics" stripe style="width: 100%">
           <el-table-column prop="species" label="鱼类品种"></el-table-column>
@@ -52,11 +52,11 @@
     </div>
 
     <!-- 总体重图表 - 降低高度 -->
-    <div class="bg-white rounded-xl shadow-lg p-4 h-[45%]">
-      <h2 class="text-xl font-bold text-gray-800 mb-4">总体重统计</h2>
+    <div class="bg-tech-dark rounded-xl shadow-lg p-4 h-[45%]">
+      <h2 class="text-xl font-bold text-tech-blue-600 mb-4">总体重统计</h2>
       <div class="h-[calc(100%-40px)]">
-        <div class="bg-gray-50 rounded-lg p-4 h-full flex flex-col">
-          <h3 class="text-lg font-semibold text-gray-700 mb-2">预估总体重 (kg)</h3>
+        <div class="bg-tech-darker rounded-lg p-4 h-full flex flex-col">
+          <h3 class="text-lg font-semibold text-tech-blue-400 mb-2">预估总体重 (kg)</h3>
           <div class="flex-1 flex justify-center items-center">
             <canvas ref="totalWeightChartRef" style="height: 300px;width: 100% !important;"></canvas>
           </div>
@@ -89,8 +89,8 @@ const totalWeightData = ref({
     {
       label: '预估总体重',
       data: [9.3],
-      backgroundColor: ['rgba(54, 162, 235, 0.6)'],
-      borderColor: ['rgb(54, 162, 235)'],
+      backgroundColor: ['rgba(59, 130, 246, 0.6)'],
+      borderColor: ['rgb(59, 130, 246)'],
       borderWidth: 1
     }
   ]
@@ -122,15 +122,22 @@ const initCharts = () => {
               font: {
                 size: 14,
                 weight: 'bold'
-              }
+              },
+              color: 'rgba(147, 197, 253, 0.8)'
             },
             grid: {
-              color: 'rgba(0, 0, 0, 0.05)'
+              color: 'rgba(59, 130, 246, 0.1)'
+            },
+            ticks: {
+              color: 'rgba(147, 197, 253, 0.6)'
             }
           },
           x: {
             grid: {
               display: false
+            },
+            ticks: {
+              color: 'rgba(147, 197, 253, 0.6)'
             }
           }
         },
@@ -139,13 +146,15 @@ const initCharts = () => {
             display: false
           },
           tooltip: {
-            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+            backgroundColor: 'rgba(17, 24, 39, 0.9)',
             titleFont: {
               size: 14,
-              weight: 'bold'
+              weight: 'bold',
+              color: 'rgba(147, 197, 253, 1)'
             },
             bodyFont: {
-              size: 13
+              size: 13,
+              color: 'rgba(147, 197, 253, 0.8)'
             },
             padding: 10,
             cornerRadius: 4
@@ -183,7 +192,9 @@ watchEffect(() => {
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@use '@/assets/main.scss';
+
 /* 视频容器相关样式 */
 video {
   background-color: #000;
@@ -206,7 +217,9 @@ video {
   flex-shrink: 0;
   border-radius: 6px;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
+  background: rgba(17, 24, 39, 0.6) !important;
+  border: var(--border-tech) !important;
 }
 
 /* 单个视频容器 */
@@ -220,6 +233,82 @@ video {
 /* 防止视频控件重叠问题 */
 .video-item video::-webkit-media-controls {
   z-index: 2;
+}
+
+/* 容器样式 */
+.bg-tech-dark {
+  background: var(--tech-blue-900);
+  border: var(--border-tech);
+}
+
+.bg-tech-darker {
+  background: rgba(17, 24, 39, 0.4);
+  border: var(--border-tech);
+}
+
+.text-tech-blue-600 {
+  color: var(--tech-blue-600);
+}
+
+.text-tech-blue-400 {
+  color: var(--tech-blue-400);
+}
+
+/* 表格样式 */
+:deep(.el-table) {
+  background: transparent !important;
+  border: none;
+  color: var(--tech-blue-400);
+  
+  .el-table__header {
+    background: var(--tech-blue-800) !important;
+    
+    th {
+      background: var(--tech-blue-800) !important;
+      color: var(--tech-blue-600) !important;
+      font-weight: 600;
+      border-bottom: 1px solid rgba(59, 130, 246, 0.3);
+      
+      .cell {
+        color: var(--tech-blue-600) !important;
+        font-weight: 600;
+      }
+    }
+  }
+  
+  .el-table__body {
+    tr {
+      background: rgba(17, 24, 39, 0.4) !important;
+      color: var(--tech-blue-400) !important;
+      
+      &:hover > td {
+        background: rgba(59, 130, 246, 0.1) !important;
+      }
+      
+      td {
+        background: transparent !important;
+        border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+        color: var(--tech-blue-300) !important;
+        
+        .cell {
+          color: var(--tech-blue-300) !important;
+        }
+      }
+    }
+  }
+  
+  .el-table__empty-block {
+    background: rgba(17, 24, 39, 0.4) !important;
+  }
+}
+
+/* 进度条样式 */
+:deep(.el-progress__bar) {
+  background: var(--gradient-primary) !important;
+}
+
+:deep(.el-progress__track) {
+  background: rgba(59, 130, 246, 0.2) !important;
 }
 
 /* 响应式设计调整 */

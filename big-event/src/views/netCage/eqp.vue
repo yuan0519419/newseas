@@ -266,7 +266,7 @@ const deleteEqp = (row) => {
       <el-table-column label="结构件状况" prop="strucStat"></el-table-column>
       <el-table-column label="网衣清洗情况" prop="netStat"></el-table-column>
     <el-table-column label="抽检时间" prop="sTime"  width="100"></el-table-column>
-      <el-table-column label="操作" width="100">
+      <el-table-column label="操作" width="160">
         <template #default="{ row }">
           <el-button
             :icon="Edit"
@@ -274,6 +274,7 @@ const deleteEqp = (row) => {
             plain
             type="primary"
             @click="showDialog(row)"
+            size="small"
           ></el-button>
           <el-button
             :icon="Delete"
@@ -281,6 +282,8 @@ const deleteEqp = (row) => {
             plain
             type="danger"
             @click="deleteEqp(row)"
+            size="small"
+            style="margin-left: 12px"
           ></el-button>
         </template>
       </el-table-column>
@@ -349,14 +352,283 @@ const deleteEqp = (row) => {
 </template>
 
 <style lang="scss" scoped>
+@use '@/assets/main.scss';
+
 .page-container {
   min-height: 100%;
   box-sizing: border-box;
+  background: linear-gradient(135deg, #1a110f 0%, #2d1d1a 100%);
+  border: 1px solid rgba(249, 115, 22, 0.3);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 0 30px rgba(249, 115, 22, 0.2);
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #f97316, #fb923c, #f97316);
+    opacity: 0.8;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: 
+      radial-gradient(circle at 35% 35%, rgba(249, 115, 22, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 65% 65%, rgba(26, 17, 15, 0.3) 0%, transparent 50%);
+    animation: gear 18s ease-in-out infinite;
+  }
 
   .header {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    padding: var(--spacing-lg);
+    background: rgba(26, 17, 15, 0.8);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(249, 115, 22, 0.2);
+    position: relative;
+    z-index: 1;
+    
+    span {
+      font-size: 18px;
+      font-weight: 600;
+      background: linear-gradient(90deg, #f97316, #fb923c);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .extra {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+  }
+}
+
+@keyframes gear {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate(-5%, -5%) rotate(180deg);
+  }
+  100% {
+    transform: translate(0, 0) rotate(360deg);
+  }
+}
+
+// 表格容器样式
+:deep(.el-table) {
+  background: transparent !important;
+  border: none;
+  color: #fdba74;
+  position: relative;
+  z-index: 1;
+  
+  .el-table__header {
+    background: linear-gradient(90deg, rgba(26, 17, 15, 0.9) 0%, rgba(45, 29, 26, 0.9) 100%) !important;
+    
+    th {
+      background: transparent !important;
+      color: #fb923c !important;
+      font-weight: 600;
+      border-bottom: 1px solid rgba(249, 115, 22, 0.4);
+      box-shadow: 0 1px 0 rgba(249, 115, 22, 0.2);
+      
+      .cell {
+        color: #fb923c !important;
+        font-weight: 600;
+        text-shadow: 0 0 10px rgba(249, 115, 22, 0.3);
+      }
+    }
+  }
+  
+  .el-table__body {
+    tr {
+      background: linear-gradient(90deg, rgba(26, 17, 15, 0.6) 0%, rgba(45, 29, 26, 0.6) 100%) !important;
+      color: #fdba74 !important;
+      border-radius: 8px;
+      margin: 0 8px;
+      
+      &:hover > td {
+        background: linear-gradient(90deg, rgba(249, 115, 22, 0.1) 0%, rgba(249, 115, 22, 0.05) 100%) !important;
+        box-shadow: 0 0 15px rgba(249, 115, 22, 0.2);
+      }
+      
+      td {
+        background: transparent !important;
+        border-bottom: 1px solid rgba(249, 115, 22, 0.2);
+        color: #fdba74 !important;
+        
+        .cell {
+          color: #fdba74 !important;
+          text-shadow: 0 0 5px rgba(249, 115, 22, 0.2);
+        }
+      }
+    }
+  }
+  
+  .el-table__empty-block {
+    background: rgba(26, 17, 15, 0.6) !important;
+    color: #fdba74;
+  }
+}
+
+// 按钮样式优化
+:deep(.el-button) {
+  &.el-button--primary {
+    background: var(--gradient-primary);
+    border-color: transparent;
+    color: var(--tech-blue-900);
+    font-weight: 600;
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--glow-md);
+    }
+  }
+  
+  &.el-button--danger {
+    background: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
+    border-color: transparent;
+    color: white;
+    font-weight: 600;
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+    }
+  }
+  
+  &.el-button--default {
+    background: rgba(17, 24, 39, 0.6);
+    border: var(--border-tech);
+    color: var(--tech-blue-400);
+    
+    &:hover {
+      border-color: var(--tech-blue-500);
+      background: rgba(59, 130, 246, 0.1);
+    }
+  }
+}
+
+// 日期选择器样式优化
+:deep(.el-date-editor) {
+  .el-input__inner {
+    background: rgba(10, 14, 26, 0.6);
+    border: var(--border-tech);
+    color: var(--tech-blue-400);
+    
+    &:hover {
+      border-color: rgba(59, 130, 246, 0.4);
+    }
+    
+    &:focus {
+      border-color: var(--tech-blue-500);
+      box-shadow: var(--glow-sm);
+    }
+  }
+  
+  .el-input__prefix {
+    color: var(--tech-blue-400);
+  }
+}
+
+// 对话框样式优化
+:deep(.el-dialog) {
+  background: var(--tech-blue-800);
+  border: var(--border-tech);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  
+  .el-dialog__header {
+    background: rgba(17, 24, 39, 0.6);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(59, 130, 246, 0.3);
+    
+    .el-dialog__title {
+      color: var(--tech-blue-600);
+      font-weight: 600;
+    }
+  }
+  
+  .el-dialog__body {
+    background: transparent;
+    color: var(--tech-blue-300);
+    
+    .el-form-item__label {
+      color: var(--tech-blue-400);
+      font-weight: 500;
+    }
+    
+    .el-input__inner {
+      background: rgba(10, 14, 26, 0.6);
+      border: var(--border-tech);
+      color: var(--tech-blue-300);
+      
+      &:hover {
+        border-color: rgba(59, 130, 246, 0.4);
+      }
+      
+      &:focus {
+        border-color: var(--tech-blue-500);
+        box-shadow: var(--glow-sm);
+      }
+    }
+  }
+  
+  .el-dialog__footer {
+    background: rgba(17, 24, 39, 0.6);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(59, 130, 246, 0.3);
+  }
+}
+
+// 空状态样式优化
+:deep(.el-empty) {
+  .el-empty__description {
+    color: var(--tech-blue-400);
+  }
+}
+
+// 操作按钮样式
+:deep(.el-button--circle) {
+  border-radius: 50%;
+  padding: 8px;
+  
+  &.el-button--primary {
+    background: rgba(59, 130, 246, 0.2);
+    border-color: rgba(59, 130, 246, 0.4);
+    color: var(--tech-blue-400);
+    
+    &:hover {
+      background: rgba(59, 130, 246, 0.4);
+      border-color: var(--tech-blue-500);
+      color: white;
+    }
+  }
+  
+  &.el-button--danger {
+    background: rgba(239, 68, 68, 0.2);
+    border-color: rgba(239, 68, 68, 0.4);
+    color: var(--tech-silver-400);
+    
+    &:hover {
+      background: rgba(239, 68, 68, 0.4);
+      border-color: #ef4444;
+      color: white;
+    }
   }
 }
 </style>

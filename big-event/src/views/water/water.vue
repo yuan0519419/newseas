@@ -285,33 +285,156 @@ const DataRefresh = async () => {
 </script>
 
 <style lang="scss" scoped>
+@use '@/assets/main.scss';
+
 .button-container {
   display: flex;
   justify-content: center;
-  margin-top: 50px;
-  margin-bottom: 30px;
+  align-items: center;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-2xl);
+  margin-bottom: var(--spacing-xl);
+  padding: var(--spacing-lg);
+  background: rgba(17, 24, 39, 0.6);
+  backdrop-filter: blur(10px);
+  border-radius: var(--radius-lg);
+  border: var(--border-tech);
+  box-shadow: var(--shadow-md);
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--gradient-primary);
+    opacity: 0.5;
+  }
 }
 
 .chart-container {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-  padding: 20px;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-xl);
+  max-width: 1600px;
+  margin: 0 auto;
 }
 
 .chart-container > div {
-  width: 90%;
-  margin: 0 auto;
-  height: 350px;
-  border: 1px solid #eaeaea;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  padding: 10px;
-  transition: transform 0.2s ease;
+  background: var(--tech-blue-800);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  border: var(--border-tech);
+  box-shadow: var(--shadow-md);
+  position: relative;
+  overflow: hidden;
+  transition: all var(--transition-base);
+  height: 380px;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--gradient-primary);
+    opacity: 0.5;
+    transition: opacity var(--transition-base);
+  }
+  
+  &:hover {
+    border-color: var(--tech-blue-500);
+    box-shadow: var(--shadow-lg), var(--glow-sm);
+    transform: translateY(-4px);
+    
+    &::before {
+      opacity: 1;
+    }
+  }
 }
 
-.chart-container > div:hover {
-  transform: translateY(-5px);
+// 图表标题样式 - 深蓝色
+:deep(.echarts-title) {
+  color: var(--tech-blue-600) !important;
+  font-weight: 600;
+  font-size: 16px;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+// 图表数据样式 - 浅蓝色
+:deep(.echarts-series) {
+  color: var(--tech-blue-400) !important;
+}
+
+// 图表轴线样式
+:deep(.echarts-axis-line) {
+  stroke: var(--tech-blue-500) !important;
+}
+
+// 图表网格线样式
+:deep(.echarts-grid-line) {
+  stroke: rgba(59, 130, 246, 0.2) !important;
+}
+
+// 图表标签样式
+:deep(.echarts-label) {
+  color: var(--tech-blue-400) !important;
+  fill: var(--tech-blue-400) !important;
+}
+
+// 按钮样式优化
+:deep(.el-button) {
+  &.el-button--primary {
+    background: var(--gradient-primary);
+    border-color: transparent;
+    color: var(--tech-blue-900);
+    font-weight: 600;
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--glow-md);
+    }
+  }
+  
+  &.el-button--success {
+    background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+    border-color: transparent;
+    color: white;
+    font-weight: 600;
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+    }
+  }
+}
+
+// 日期选择器样式优化
+:deep(.el-date-editor) {
+  .el-input__inner {
+    background: rgba(10, 14, 26, 0.6);
+    border: var(--border-tech);
+    color: var(--tech-blue-400);
+    
+    &:hover {
+      border-color: rgba(59, 130, 246, 0.4);
+    }
+    
+    &:focus {
+      border-color: var(--tech-blue-500);
+      box-shadow: var(--glow-sm);
+    }
+  }
+  
+  .el-input__prefix {
+    color: var(--tech-blue-400);
+  }
 }
 
 @media (max-width: 1200px) {
@@ -323,11 +446,17 @@ const DataRefresh = async () => {
 @media (max-width: 768px) {
   .chart-container {
     grid-template-columns: 1fr;
-    padding: 10px;
+    padding: var(--spacing-md);
+    gap: var(--spacing-md);
   }
   
   .chart-container > div {
     height: 300px;
+  }
+  
+  .button-container {
+    flex-direction: column;
+    gap: var(--spacing-sm);
   }
 }
 </style>

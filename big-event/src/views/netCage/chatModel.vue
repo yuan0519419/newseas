@@ -73,45 +73,72 @@ let result= await getAnswerService(question);
 
 </script>
 
-<style>
+<style lang="scss" scoped>
+@use '@/assets/main.scss';
+
 .chat-app {
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
   font-family: Arial, sans-serif;
-  /* 确保页面不会出现不必要的滚动 */
   box-sizing: border-box;
+  min-height: 100vh;
+  background: var(--tech-blue-900);
 }
 
 h1 {
   text-align: center;
-  color: #333;
-  margin-bottom: 20px; /* 减少标题下方间距 */
-  font-size: 1.8rem; /* 适当减小标题大小 */
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 20px;
+  font-size: 1.8rem;
+  font-weight: 600;
+  text-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
 }
 
 h2 {
-  color: #555;
-  border-bottom: 1px solid #ddd;
+  color: var(--tech-blue-600);
+  border-bottom: 1px solid rgba(59, 130, 246, 0.3);
   padding-bottom: 8px;
   margin-top: 0;
   font-size: 1.3rem;
+  font-weight: 600;
 }
 
 .response-box, .input-box {
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  padding: 15px; /* 减少内边距 */
-  margin-bottom: 15px; /* 减少框之间的间距 */
+  background: rgba(17, 24, 39, 0.6);
+  border: var(--border-tech);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: 15px;
+  margin-bottom: 15px;
   box-sizing: border-box;
+  backdrop-filter: blur(10px);
 }
 
 .response-box {
-  /* 适当减小响应区域高度 */
   height: 300px;
-  /* 溢出内容显示滚动条 */
   overflow-y: auto;
+  
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: rgba(10, 14, 26, 0.6);
+    border-radius: 3px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: rgba(59, 130, 246, 0.4);
+    border-radius: 3px;
+  }
+  
+  &::-webkit-scrollbar-thumb:hover {
+    background: rgba(59, 130, 246, 0.6);
+  }
 }
 
 .response-content {
@@ -121,22 +148,30 @@ h2 {
 .response-item {
   padding: 10px;
   border-radius: 6px;
-  background-color: #f9f9f9;
+  background: rgba(10, 14, 26, 0.6);
+  border: 1px solid rgba(59, 130, 246, 0.2);
   margin-bottom: 10px;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    border-color: rgba(59, 130, 246, 0.4);
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+  }
 }
 
 .response-question {
   margin-bottom: 6px;
-  color: #333;
+  color: var(--tech-blue-400);
+  font-weight: 600;
 }
 
 .response-answer {
-  color: #666;
+  color: var(--tech-blue-300);
   line-height: 1.5;
 }
 
 .empty-state {
-  color: #999;
+  color: var(--tech-blue-400);
   text-align: center;
   padding: 40px 0;
   font-style: italic;
@@ -144,39 +179,50 @@ h2 {
 
 .question-input {
   width: 100%;
-  min-height: 80px; /* 减小输入框高度 */
+  min-height: 80px;
   padding: 10px;
-  border: 1px solid #ddd;
+  background: rgba(10, 14, 26, 0.6);
+  border: var(--border-tech);
   border-radius: 6px;
   resize: vertical;
   font-family: inherit;
   margin-bottom: 10px;
   box-sizing: border-box;
-}
-
-.question-input:focus {
-  outline: none;
-  border-color: #66afe9;
-  box-shadow: 0 0 0 3px rgba(102, 175, 233, 0.1);
+  color: var(--tech-blue-300);
+  transition: all 0.3s ease;
+  
+  &:focus {
+    outline: none;
+    border-color: var(--tech-blue-500);
+    box-shadow: var(--glow-sm);
+  }
+  
+  &::placeholder {
+    color: var(--tech-blue-500);
+    opacity: 0.6;
+  }
 }
 
 .submit-btn {
-  background-color: #4285f4;
-  color: white;
+  background: var(--gradient-primary);
+  color: var(--tech-blue-900);
   border: none;
-  padding: 8px 16px; /* 减小按钮大小 */
+  padding: 8px 16px;
   border-radius: 6px;
   cursor: pointer;
   font-size: 15px;
-  transition: background-color 0.3s;
-}
-
-.submit-btn:hover {
-  background-color: #3367d6;
-}
-
-.submit-btn:disabled {
-  background-color: #cccccc;
-  cursor: not-allowed;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: var(--glow-md);
+  }
+  
+  &:disabled {
+    background: rgba(107, 114, 128, 0.3);
+    color: var(--tech-blue-500);
+    cursor: not-allowed;
+  }
 }
 </style>

@@ -355,16 +355,24 @@ onUnmounted(() => {
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@use '@/assets/main.scss';
+
 .fish-monitoring-container {
   padding: 20px;
   min-height: 100vh;
+  background: var(--tech-blue-900);
 }
 
 .title-card {
   margin-bottom: 20px;
-  background-color: #1e88e5;
-  color: white;
+  background: var(--gradient-primary) !important;
+  border: var(--border-tech) !important;
+  box-shadow: var(--shadow-md);
+  
+  .el-card__header {
+    border-bottom: none !important;
+  }
 }
 
 .header-content {
@@ -377,6 +385,8 @@ onUnmounted(() => {
   font-size: 24px;
   font-weight: bold;
   margin-bottom: 5px;
+  color: white;
+  text-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
 }
 
 .subtitle {
@@ -393,12 +403,13 @@ onUnmounted(() => {
 .update-time {
   margin-left: 10px;
   font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
 }
 
 /* 监测区域样式 */
 .monitoring-area {
   position: relative;
-  min-height: 700px; /* 增加高度以完全展示背景图片 */
+  min-height: 700px;
   height: auto;
   background-image: url('../assets/bg.png');
   background-size: cover;
@@ -408,29 +419,36 @@ onUnmounted(() => {
   margin-bottom: 10px;
   overflow: hidden;
   position: relative;
-}
-
-/* 移除水波纹背景效果 */
-.monitoring-area::before {
-  content: none;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(10, 14, 26, 0.6);
+    backdrop-filter: blur(5px);
+    z-index: 0;
+  }
 }
 
 .reef-container {
   position: absolute;
   z-index: 1;
-  display: block; /* 改为块级布局，避免flex影响位置 */
-  width: 350px; /* 增加容器宽度，使卡片更宽 */
+  display: block;
+  width: 350px;
 }
 
 .reef-left-top {
   position: absolute;
-  top: -51px; /* 调整位置到冲脚池左侧的红色圆圈 */
+  top: -51px;
   left: 650px;
 }
 
 .reef-right-bottom {
   position: absolute;
-  top: -50px; /* 调整位置到冲脚池右侧的红色圆圈 */
+  top: -50px;
   right: 250px;
 }
 
@@ -438,7 +456,6 @@ onUnmounted(() => {
   position: relative;
   width: 200px;
   height: 200px;
-  /* 固定指示灯容器位置，不随信息卡片变化 */
 }
 
 .reef-image {
@@ -454,25 +471,27 @@ onUnmounted(() => {
   transform: translate(-50%, -50%);
   width: 50px;
   height: 50px;
-  background-color: white;
+  background: rgba(17, 24, 39, 0.8);
+  border: 2px solid rgba(59, 130, 246, 0.4);
   border-radius: 50%;
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   z-index: 10;
 }
 
 .indicator-icon {
   font-size: 36px;
-  color: #1989fa; /* 蓝色 - 默认状态 */
+  color: #3B82F6;
+  filter: drop-shadow(0 0 5px rgba(59, 130, 246, 0.5));
   transition: color 0.3s ease, transform 0.3s ease;
 }
 
 .indicator-icon.indicator-active {
-  color: #ff4d4f; /* 红色 - 激活状态 */
+  color: #EF4444;
   animation: pulse 0.8s infinite;
-  filter: drop-shadow(0 0 5px #ff4d4f); /* 添加红色辉光效果 */
+  filter: drop-shadow(0 0 10px rgba(239, 68, 68, 0.8));
 }
 
 @keyframes pulse {
@@ -488,32 +507,34 @@ onUnmounted(() => {
 }
 
 .reef-info {
-  background-color: white;
-  padding: 10px 20px; /* 增加内边距，使卡片更宽 */
+  background: rgba(17, 24, 39, 0.8);
+  border: 1px solid rgba(59, 130, 246, 0.3);
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  padding: 10px 20px;
   text-align: center;
   width: 250px;
-  /* 独立定位信息卡片，不影响指示灯 */
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
+  backdrop-filter: blur(10px);
 }
 
-/* 鱼礁1的信息卡片 - 固定在指示灯右侧，进一步调近距离 */
+/* 鱼礁1的信息卡片 */
 .reef-left-top .reef-info {
   left: 150px;
 }
 
-/* 鱼礁2的信息卡片 - 固定在指示灯左侧，进一步调近距离 */
+/* 鱼礁2的信息卡片 */
 .reef-right-bottom .reef-info {
-  left: -220px; /* 向左偏移，考虑卡片宽度250px + 更小的间距 */
+  left: -220px;
 }
 
 .reef-info h3 {
   margin: 0 0 10px 0;
-  color: #1e88e5;
+  color: var(--tech-blue-600);
   font-size: 18px;
+  font-weight: 600;
 }
 
 .fish-detection-info {
@@ -522,33 +543,33 @@ onUnmounted(() => {
 }
 
 .reef-info .fish-info {
-  color: #333;
+  color: var(--tech-blue-300);
   font-weight: bold;
   font-size: 14px;
   margin-bottom: 5px;
 }
 
 .reef-info .time-info {
-  color: #666;
+  color: var(--tech-blue-400);
   font-size: 12px;
 }
 
 .no-detection {
   margin: 0;
-  color: #999;
+  color: var(--tech-blue-400);
   font-size: 14px;
 }
 
 /* 保留鱼礁信息样式 */
 .fish-info {
-  color: #333;
+  color: var(--tech-blue-300);
   font-weight: bold;
   font-size: 16px;
   margin-bottom: 8px;
 }
 
 .time-info {
-  color: #666;
+  color: var(--tech-blue-400);
   font-size: 14px;
 }
 
@@ -558,7 +579,7 @@ onUnmounted(() => {
   justify-content: center;
   margin: 20px 0;
   position: relative;
-  z-index: 2; /* 确保按钮在背景图上方 */
+  z-index: 2;
 }
 
 .history-button-container .el-button {
@@ -575,7 +596,7 @@ onUnmounted(() => {
 .no-history {
   text-align: center;
   padding: 40px 0;
-  color: #909399;
+  color: var(--tech-blue-400);
   font-size: 14px;
 }
 
@@ -584,8 +605,103 @@ onUnmounted(() => {
   font-size: 14px;
 }
 
-.history-records-container .el-table th {
-  background-color: #f5f7fa;
+// 按钮样式
+:deep(.el-button--primary) {
+  background: var(--gradient-primary);
+  border-color: transparent;
+  color: var(--tech-blue-900);
   font-weight: 600;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--glow-md);
+  }
+}
+
+// 对话框样式
+:deep(.el-dialog) {
+  background: var(--tech-blue-800);
+  border: var(--border-tech);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  
+  .el-dialog__header {
+    background: rgba(17, 24, 39, 0.6);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(59, 130, 246, 0.3);
+    
+    .el-dialog__title {
+      color: var(--tech-blue-600);
+      font-weight: 600;
+    }
+  }
+  
+  .el-dialog__body {
+    background: transparent;
+    color: var(--tech-blue-300);
+  }
+  
+  .el-dialog__footer {
+    background: rgba(17, 24, 39, 0.6);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(59, 130, 246, 0.3);
+  }
+}
+
+// 表格样式
+:deep(.el-table) {
+  background: transparent !important;
+  border: none;
+  color: var(--tech-blue-400);
+  
+  .el-table__header {
+    background: var(--tech-blue-800) !important;
+    
+    th {
+      background: var(--tech-blue-800) !important;
+      color: var(--tech-blue-600) !important;
+      font-weight: 600;
+      border-bottom: 1px solid rgba(59, 130, 246, 0.3);
+      
+      .cell {
+        color: var(--tech-blue-600) !important;
+        font-weight: 600;
+      }
+    }
+  }
+  
+  .el-table__body {
+    tr {
+      background: rgba(17, 24, 39, 0.4) !important;
+      color: var(--tech-blue-400) !important;
+      
+      &:hover > td {
+        background: rgba(59, 130, 246, 0.1) !important;
+      }
+      
+      td {
+        background: transparent !important;
+        border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+        color: var(--tech-blue-300) !important;
+        
+        .cell {
+          color: var(--tech-blue-300) !important;
+        }
+      }
+    }
+  }
+  
+  .el-table__empty-block {
+    background: rgba(17, 24, 39, 0.4) !important;
+  }
+}
+
+// 标签样式
+:deep(.el-tag) {
+  &.el-tag--success {
+    background: rgba(16, 185, 129, 0.2);
+    border-color: rgba(16, 185, 129, 0.4);
+    color: #10B981;
+  }
 }
 </style>

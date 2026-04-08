@@ -1,3 +1,184 @@
+<template>
+  <el-container class="tech-layout">
+    <!-- 科技风侧边栏 -->
+    <el-aside width="240px" class="tech-aside">
+      <div class="aside-header">
+        <div class="logo-wrapper">
+          <div class="logo-icon">
+            <svg viewBox="0 0 100 100" class="logo-svg">
+              <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" stroke-width="2"/>
+              <path d="M50 15 Q70 35 70 50 Q70 65 50 85 Q30 65 30 50 Q30 35 50 15" fill="none" stroke="currentColor" stroke-width="2"/>
+              <circle cx="50" cy="50" r="8" fill="currentColor"/>
+              <path d="M20 50 Q35 45 50 50 Q65 55 80 50" fill="none" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M25 60 Q40 55 50 60 Q60 65 75 60" fill="none" stroke="currentColor" stroke-width="1"/>
+            </svg>
+          </div>
+          <div class="logo-text">
+            <h1 class="system-name">南海智慧牧场</h1>
+            <p class="system-name-en">Ocean Ranch Monitor</p>
+          </div>
+        </div>
+      </div>
+
+      <el-menu
+        :default-active="$route.path"
+        background-color="transparent"
+        text-color="var(--tech-silver-400)"
+        active-text-color="var(--tech-cyan-400)"
+        router
+        class="tech-menu"
+      >
+        <div class="menu-section">
+          <div class="menu-section-title">
+            <span class="section-icon">
+              <DataAnalysis />
+            </span>
+            数据监测
+          </div>
+          
+          <el-menu-item index="/sea">
+            <el-icon class="menu-icon"><Link /></el-icon>
+            <span>水质数据同步</span>
+          </el-menu-item>
+
+          <el-menu-item index="/water">
+            <el-icon class="menu-icon"><Monitor /></el-icon>
+            <span>水质监测预测</span>
+          </el-menu-item>
+
+          <el-menu-item index="/fish">
+            <el-icon class="menu-icon"><Coin /></el-icon>
+            <span>水下鱼群智能估产</span>
+          </el-menu-item>
+        </div>
+
+        <div class="menu-section">
+          <div class="menu-section-title">
+            <span class="section-icon">
+              <VideoCamera />
+            </span>
+            养殖监控
+          </div>
+          
+          <el-menu-item index="/cage">
+            <el-icon class="menu-icon"><DataAnalysis /></el-icon>
+            <span>网箱信息</span>
+          </el-menu-item>
+
+          <el-menu-item index="/weather">
+            <el-icon class="menu-icon"><MostlyCloudy /></el-icon>
+            <span>气象信息</span>
+          </el-menu-item>
+
+          <el-menu-item index="/eqp">
+            <el-icon class="menu-icon"><Monitor /></el-icon>
+            <span>设备维护</span>
+          </el-menu-item>
+
+          <el-menu-item index="/reserve">
+            <el-icon class="menu-icon"><View /></el-icon>
+            <span>养殖储备信息</span>
+          </el-menu-item>
+        </div>
+
+        <div class="menu-section">
+          <div class="menu-section-title">
+            <span class="section-icon">
+              <CreditCard />
+            </span>
+            鱼类追踪
+          </div>
+          
+          <el-menu-item index="/pit">
+            <el-icon class="menu-icon"><CreditCard /></el-icon>
+            <span>鱼类监测系统</span>
+          </el-menu-item>
+
+          <el-menu-item index="/pit3">
+            <el-icon class="menu-icon"><CreditCard /></el-icon>
+            <span>PIT游泳动物跟踪遥测</span>
+          </el-menu-item>
+        </div>
+
+        <div class="menu-section">
+          <div class="menu-section-title">
+            <span class="section-icon">
+              <Cpu />
+            </span>
+            智能助手
+          </div>
+          
+          <el-menu-item index="/chatModel">
+            <el-icon class="menu-icon"><Cpu /></el-icon>
+            <span>南海智能化牧场数据监测平台助手</span>
+          </el-menu-item>
+        </div>
+      </el-menu>
+
+      <div class="aside-footer">
+        <div class="university-info">
+          <p>广东海洋大学</p>
+          <p class="college">海洋科学与技术学院</p>
+        </div>
+      </div>
+    </el-aside>
+
+    <!-- 右侧主区域 -->
+    <el-container class="main-container">
+      <!-- 科技风头部 -->
+      <el-header class="tech-header">
+        <div class="header-left">
+          <div class="breadcrumb">
+            <span class="breadcrumb-item">首页</span>
+            <span class="breadcrumb-separator">/</span>
+            <span class="breadcrumb-item active">{{ $route.name || '数据监测' }}</span>
+          </div>
+        </div>
+        
+        <div class="header-right">
+          <div class="user-info">
+            <el-dropdown placement="bottom-end" @command="handleCommand">
+              <span class="el-dropdown__box">
+                <el-avatar
+                  :src="userInfoStore.info.userPic ? userInfoStore.info.userPic : avatar"
+                  class="user-avatar"
+                />
+                <div class="user-details">
+                  <span class="user-name">{{ userInfoStore.info.nickname }}</span> 
+                  <span class="user-role">研究员</span>
+                </div>
+                <el-icon class="dropdown-icon"><CaretBottom /></el-icon>
+              </span>
+              <template #dropdown>
+                <el-dropdown-menu class="tech-dropdown">
+                  <el-dropdown-item command="info" :icon="User">基本资料</el-dropdown-item>
+                  <el-dropdown-item command="avatar" :icon="Crop">更换头像</el-dropdown-item>
+                  <el-dropdown-item command="resetPassword" :icon="EditPen">重置密码</el-dropdown-item>
+                  <el-dropdown-item divided command="logout" :icon="SwitchButton">退出登录</el-dropdown-item>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
+          </div>
+        </div>
+      </el-header>
+
+      <!-- 中间主内容区 -->
+      <el-main class="tech-main">
+        <router-view></router-view>
+      </el-main>
+
+      <!-- 科技风页脚 -->
+      <el-footer class="tech-footer">
+        <div class="footer-content">
+          <span>© 2025 广东海洋大学 · 海洋科学与技术学院</span>
+          <span class="footer-divider">|</span>
+          <span>Tech Vision System v2.0</span>
+        </div>
+      </el-footer>
+    </el-container>
+  </el-container>
+</template>
+
 <script setup>
 import {
   Management,
@@ -17,14 +198,15 @@ import {
   DataAnalysis,
   MostlyCloudy,
   Monitor,
-  
 } from "@element-plus/icons-vue";
 import avatar from "@/assets/default.png";
 import { userInfoService } from "@/api/user.js";
 import useUserInfoStore from "@/stores/userInfo.js";
 import { useTokenStore } from "@/stores/token.js";
+
 const tokenStore = useTokenStore();
 const userInfoStore = useUserInfoStore();
+
 //调用函数,获取用户详细信息
 const getUserInfo = async () => {
   //先检查是否有token，有token才调用接口
@@ -46,10 +228,12 @@ const getUserInfo = async () => {
 };
 
 getUserInfo();
+
 //条目被点击后,调用的函数
 import { useRouter } from "vue-router";
 const router = useRouter();
 import { ElMessage, ElMessageBox } from "element-plus";
+
 const handleCommand = (command) => {
   //判断指令
   if (command === "logout") {
@@ -85,231 +269,454 @@ const handleCommand = (command) => {
 };
 </script>
 
-<template>
-  <el-container class="layout-container">
-    <!-- 左侧菜单 -->
-    <el-aside width="200px">
-      <div class="el-aside__logo"></div>
-      <el-menu
-        active-text-color="#ffd04b"
-        background-color="#232323"
-        text-color="#fff"
-        router
-      >
-        <el-menu-item index="/sea">
-          <el-icon><Link /></el-icon>
-          <span>水质数据同步</span>
-        </el-menu-item>
-
-        <el-menu-item index="/water">
-          <el-icon><Monitor /></el-icon>
-          <span>水质监测预测</span>
-        </el-menu-item>
-
-         <el-menu-item index="/fish">
-          <el-icon><Coin /></el-icon>
-          <span>水下鱼群智能估产</span>
-        </el-menu-item>
-
-        <el-menu-item index="/pit">
-          <el-icon><CreditCard /></el-icon>
-          <span>鱼类监测系统</span>
-        </el-menu-item>
-
-        <el-menu-item index="/pit3">
-          <el-icon><CreditCard /></el-icon>
-          <span>PIT游泳动物跟踪遥测</span>
-        </el-menu-item>
-
-     
-
-        <el-sub-menu>
-            <template #title>
-            <el-icon><VideoCamera /></el-icon>
-            <span>养殖监控</span>
-          </template>
-
-           <el-menu-item index="/cage">
-            <el-icon><DataAnalysis /></el-icon>
-            <span>网箱信息</span>
-          </el-menu-item>
-
-        
-
-          <el-menu-item index="/weather">
-            <el-icon><MostlyCloudy /></el-icon>
-            <span>气象信息</span>
-          </el-menu-item>
-          <el-menu-item index="/eqp">
-            <el-icon><Monitor /></el-icon>
-            <span>设备维护</span>
-          </el-menu-item>
-          <el-menu-item index="/reserve">
-            <el-icon><View /></el-icon>
-            <span>养殖储备信息</span>
-          </el-menu-item>
-        </el-sub-menu>
-
-
-        <!-- <el-menu-item index="/methods">
-          <el-icon><Cpu /></el-icon>
-          <span>算法库</span>
-        </el-menu-item> -->
-
-
-        <el-menu-item index="/chatModel">
-          <el-icon><View /></el-icon>
-          <span>视觉大模型</span>
-        </el-menu-item>
-
-
-        <el-sub-menu>
-          <template #title>
-            <el-icon>
-              <UserFilled />
-            </el-icon>
-            <span>个人中心</span>
-          </template>
-          <el-menu-item index="/user/info">
-            <el-icon>
-              <User />
-            </el-icon>
-            <span>基本资料</span>
-          </el-menu-item>
-          <el-menu-item index="/user/avatar">
-            <el-icon>
-              <Crop />
-            </el-icon>
-            <span>更换头像</span>
-          </el-menu-item>
-          <el-menu-item index="/user/resetPassword">
-            <el-icon>
-              <EditPen />
-            </el-icon>
-            <span>重置密码</span>
-          </el-menu-item>
-        </el-sub-menu>
-      </el-menu>
-    </el-aside>
-    <!-- 右侧主区域 -->
-    <el-container>
-      <!-- 头部区域 -->
-      <el-header>
-        <div>
-        <!--   用户：<strong>{{ userInfoStore.info.nickname }}</strong> -->
-        <div class="system-title">南海智慧海上牧场数据监测平台</div>
-        </div>
-        <el-dropdown placement="bottom-end" @command="handleCommand">
-          <span class="el-dropdown__box">
-            <el-avatar
-              :src="
-                userInfoStore.info.userPic ? userInfoStore.info.userPic : avatar
-              "
-            />
-            <el-icon>
-              <CaretBottom />
-            </el-icon>
-          </span>
-          <template #dropdown>
-            <el-dropdown-menu>
-              <el-dropdown-item command="info" :icon="User"
-                >基本资料</el-dropdown-item
-              >
-              <el-dropdown-item command="avatar" :icon="Crop"
-                >更换头像</el-dropdown-item
-              >
-              <el-dropdown-item command="resetPassword" :icon="EditPen"
-                >重置密码</el-dropdown-item
-              >
-              <el-dropdown-item command="logout" :icon="SwitchButton"
-                >退出登录</el-dropdown-item
-              >
-            </el-dropdown-menu>
-          </template>
-        </el-dropdown>
-      </el-header>
-      <!-- 中间区域 -->
-      <el-main>
-        <router-view></router-view>
-      </el-main>
-      <!-- 底部区域 -->
-      <el-footer>广东海洋大学®</el-footer>
-    </el-container>
-  </el-container>
-</template>
-
 <style lang="scss" scoped>
-.layout-container {
+@use '@/assets/main.scss';
+
+.tech-layout {
   height: 100vh;
+  background: var(--tech-blue-900);
+  overflow: hidden;
+}
 
-  .el-aside {
-    background-color: #2199d9e1;
-
-    &__logo {
-      height: 120px;
-      background: url("@/assets/校徽.png") no-repeat center / 120px auto;
-    }
-
-    .el-menu {
-      border-right: none;
-      background-color: #439fe4c2;
-
-      // 菜单项悬停时的背景颜色
-      .el-menu-item:hover,
-      .el-sub-menu__title:hover {
-        background-color: #6bb6e5 !important; // 修改为你想要的悬停颜色
-      }
-
-      // 选中菜单项的背景颜色
-      .el-menu-item.is-active {
-        background-color: #439fe4c2 !important; // 保持原有的选中颜色
-      }
-
-      
-    }
-
-    
+// 科技风侧边栏
+.tech-aside {
+  background: linear-gradient(180deg, #0a0e1a 0%, #050810 100%);
+  border-right: 1px solid rgba(59, 130, 246, 0.2);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--gradient-primary);
   }
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 1px;
+    height: 100%;
+    background: linear-gradient(180deg, 
+      rgba(59, 130, 246, 0.4) 0%, 
+      rgba(59, 130, 246, 0.1) 50%, 
+      rgba(59, 130, 246, 0.4) 100%
+    );
+    box-shadow: 1px 0 8px rgba(59, 130, 246, 0.2);
+  }
+}
 
-  .el-header {
-    background-color: #fff;
+.aside-header {
+  padding: var(--spacing-xl);
+  border-bottom: var(--border-tech);
+}
+
+.logo-wrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.logo-icon {
+  width: 48px;
+  height: 48px;
+  color: var(--tech-cyan-400);
+  
+  .logo-svg {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 0 15px rgba(6, 182, 212, 0.6));
+  }
+}
+
+.logo-text {
+  .system-name {
+    font-size: 18px;
+    font-weight: 700;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 2px;
+  }
+  
+  .system-name-en {
+    font-size: 12px;
+    color: var(--tech-silver-400);
+    letter-spacing: 0.05em;
+  }
+}
+
+.tech-menu {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--spacing-md);
+  border-right: none;
+  
+  .menu-section {
+    margin-bottom: var(--spacing-xl);
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+  
+  .menu-section-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--tech-silver-400);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: var(--spacing-sm) var(--spacing-md);
+    margin-bottom: var(--spacing-xs);
     display: flex;
     align-items: center;
-    justify-content: space-between;
-
-
- .system-title {
-      font-size: 32px; // 放大字体
-      font-weight: bold; // 加粗
-      color: #1e3a8a; // 设置深蓝色文字颜色
-      flex: 1; // 占据剩余空间
-      text-align: center; // 文字居中
-      margin: 0 auto; // 居中显示
-    }
-
+    gap: var(--spacing-xs);
     
-    .el-dropdown__box {
+    .section-icon {
+      font-size: 14px;
+      color: var(--tech-cyan-400);
+    }
+  }
+  
+  .el-menu-item {
+    height: 44px;
+    padding: 0 var(--spacing-md);
+    margin-bottom: var(--spacing-xs);
+    border-radius: var(--radius-md);
+    border: 1px solid transparent;
+    transition: all var(--transition-base);
+    position: relative;
+    overflow: hidden;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 3px;
+      height: 100%;
+      background: var(--gradient-primary);
+      opacity: 0;
+      transition: opacity var(--transition-base);
+    }
+    
+    &:hover {
+      background: rgba(59, 130, 246, 0.1);
+      border-color: rgba(59, 130, 246, 0.2);
+      
+      &::before {
+        opacity: 0.5;
+      }
+    }
+    
+    &.is-active {
+      background: rgba(59, 130, 246, 0.15);
+      border-color: rgba(59, 130, 246, 0.3);
+      color: var(--tech-cyan-400);
+      
+      &::before {
+        opacity: 1;
+      }
+      
+      .menu-icon {
+        color: var(--tech-cyan-400);
+        filter: drop-shadow(0 0 8px rgba(6, 182, 212, 0.6));
+      }
+    }
+    
+    .menu-icon {
+      font-size: 18px;
+      color: var(--tech-blue-400);
+      margin-right: var(--spacing-sm);
+      transition: all var(--transition-base);
+    }
+    
+    span {
+      font-size: 14px;
+      font-weight: 500;
+    }
+  }
+}
+
+// 侧边栏底部
+.aside-footer {
+  padding: var(--spacing-lg);
+  border-top: var(--border-tech);
+  text-align: center;
+  
+  .university-info {
+    p {
+      font-size: 13px;
+      color: var(--tech-silver-400);
+      margin-bottom: 2px;
+    }
+    
+    .college {
+      font-size: 12px;
+      color: rgba(156, 163, 175, 0.6);
+    }
+  }
+}
+
+.main-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  background: linear-gradient(135deg, 
+    #1a1f2e 0%, 
+    #151a28 20%, 
+    #121622 100%
+  );
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 40px;
+    height: 100%;
+    background: linear-gradient(90deg, 
+      rgba(59, 130, 246, 0.1) 0%, 
+      rgba(59, 130, 246, 0.05) 50%, 
+      transparent 100%
+    );
+  }
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #3B82F6, #60A5FA, #3B82F6);
+    opacity: 0.8;
+  }
+  
+  // 滚动条样式
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: rgba(17, 24, 39, 0.6);
+    border-radius: 4px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #3B82F6, #60A5FA);
+    border-radius: 4px;
+    border: 2px solid rgba(17, 24, 39, 0.8);
+  }
+  
+  &::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #2563EB, #3B82F6);
+  }
+  
+  // Firefox 滚动条样式
+  scrollbar-width: thin;
+  scrollbar-color: #3B82F6 rgba(17, 24, 39, 0.6);
+}
+
+// 科技风头部
+.tech-header {
+  background: linear-gradient(180deg, #1a1f2e 0%, #151a28 100%);
+  border-bottom: var(--border-tech);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--spacing-xl);
+  height: 60px;
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, 
+      transparent 0%, 
+      rgba(59, 130, 246, 0.5) 50%, 
+      transparent 100%
+    );
+  }
+  
+  .header-left {
+    .breadcrumb {
       display: flex;
       align-items: center;
-
-      .el-icon {
-        color: #409ce2c2;
-        margin-left: 10px;
+      gap: var(--spacing-sm);
+      font-size: 14px;
+      
+      .breadcrumb-item {
+        color: var(--tech-silver-400);
+        transition: color var(--transition-fast);
+        
+        &.active {
+          color: var(--tech-cyan-400);
+          font-weight: 600;
+        }
       }
-
-      &:active,
-      &:focus {
-        outline: none;
+      
+      .breadcrumb-separator {
+        color: var(--tech-silver-400);
+        opacity: 0.5;
       }
     }
   }
+  
+  .header-right {
+    .user-info {
+      .el-dropdown__box {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-md);
+        cursor: pointer;
+        padding: var(--spacing-xs) var(--spacing-md);
+        border-radius: var(--radius-lg);
+        border: 1px solid rgba(59, 130, 246, 0.2);
+        background: rgba(59, 130, 246, 0.05);
+        transition: all var(--transition-base);
+        
+        &:hover {
+          border-color: rgba(59, 130, 246, 0.4);
+          background: rgba(59, 130, 246, 0.1);
+          box-shadow: var(--glow-sm);
+        }
+        
+        .user-avatar {
+          width: 40px;
+          height: 40px;
+          border: 2px solid var(--tech-blue-500);
+          box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+        }
+        
+        .user-details {
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
+        }
+        
+        .user-name {
+          font-size: 14px;
+          font-weight: 600;
+          color: var(--tech-silver-400);
+        }
+        
+        .user-role {
+          font-size: 12px;
+          color: var(--tech-cyan-400);
+        }
+        
+        .dropdown-icon {
+          font-size: 14px;
+          color: var(--tech-blue-400);
+        }
+      }
+    }
+  }
+}
 
-  .el-footer {
+.tech-dropdown {
+  background: var(--tech-blue-800);
+  backdrop-filter: blur(20px);
+  border: var(--border-tech);
+  box-shadow: var(--shadow-xl);
+  
+  .el-dropdown-menu__item {
+    color: var(--tech-silver-400);
+    font-size: 14px;
+    
+    &:hover {
+      background: rgba(59, 130, 246, 0.1);
+      color: var(--tech-cyan-400);
+    }
+  }
+}
+
+// 主内容区
+.tech-main {
+  flex: 1;
+  padding: var(--spacing-xl);
+  overflow-y: auto;
+  background: linear-gradient(180deg, #1a1f2e 0%, #151a28 100%);
+}
+
+// 科技风页脚
+.tech-footer {
+  background: linear-gradient(180deg, #1a1f2e 0%, #151a28 100%);
+  backdrop-filter: blur(20px);
+  border-top: var(--border-tech);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-md) var(--spacing-xl);
+  height: 50px;
+  
+  .footer-content {
     display: flex;
     align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    color: #666;
+    gap: var(--spacing-md);
+    font-size: 13px;
+    color: var(--tech-silver-400);
+    
+    .footer-divider {
+      color: var(--tech-silver-400);
+      opacity: 0.3;
+    }
+  }
+}
+
+// 滚动条美化
+.tech-menu::-webkit-scrollbar {
+  width: 6px;
+}
+
+.tech-menu::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.tech-menu::-webkit-scrollbar-thumb {
+  background: rgba(59, 130, 246, 0.3);
+  border-radius: var(--radius-full);
+  
+  &:hover {
+    background: rgba(59, 130, 246, 0.5);
+  }
+}
+
+// 响应式优化
+@media (max-width: 768px) {
+  .tech-aside {
+    width: 200px !important;
+  }
+  
+  .tech-header {
+    padding: 0 var(--spacing-lg);
+    
+    .breadcrumb {
+      font-size: 13px;
+    }
+    
+    .user-info .el-dropdown__box {
+      padding: var(--spacing-xs) var(--spacing-sm);
+    }
+  }
+  
+  .tech-main {
+    padding: var(--spacing-lg);
   }
 }
 </style>

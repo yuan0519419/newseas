@@ -1,7 +1,243 @@
+<template>
+  <div class="login-container">
+    <!-- 科技背景效果 -->
+    <div class="tech-background">
+      <div class="grid-overlay"></div>
+      <div class="glow-orb orb-1"></div>
+      <div class="glow-orb orb-2"></div>
+      <div class="glow-orb orb-3"></div>
+      <div class="floating-particles">
+        <div class="particle" v-for="i in 20" :key="i" :style="{
+          left: Math.random() * 100 + '%',
+          animationDelay: Math.random() * 5 + 's',
+          animationDuration: (5 + Math.random() * 10) + 's'
+        }"></div>
+      </div>
+    </div>
+
+    <!-- 左侧系统介绍 -->
+    <div class="system-intro">
+      <div class="intro-content">
+        <!-- Logo 与标题水平布局 -->
+        <div class="logo-title-wrapper">
+          <div class="logo-icon">
+            <svg viewBox="0 0 100 100" class="logo-svg">
+              <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" stroke-width="2"/>
+              <path d="M50 15 Q70 35 70 50 Q70 65 50 85 Q30 65 30 50 Q30 35 50 15" fill="none" stroke="currentColor" stroke-width="2"/>
+              <circle cx="50" cy="50" r="8" fill="currentColor"/>
+              <path d="M20 50 Q35 45 50 50 Q65 55 80 50" fill="none" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M25 60 Q40 55 50 60 Q60 65 75 60" fill="none" stroke="currentColor" stroke-width="1"/>
+            </svg>
+          </div>
+          <div class="title-wrapper">
+            <h1 class="system-title">
+              海上牧场数据监测平台
+            </h1>
+            <p class="system-subtitle">
+              Ocean Ranch Data Monitoring System
+            </p>
+          </div>
+        </div>
+        
+        <div class="intro-divider"></div>
+        
+        <!-- 功能特性 -->
+        <div class="feature-list">
+          <div class="feature-item">
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 6l9-4 9 4v6c0 5.55-3.84 10.74-9 12-5.16-1.26-9-6.45-9-12V6z"/>
+                <path d="M3 6h18"/>
+                <path d="M9 10h6"/>
+                <path d="M9 14h6"/>
+              </svg>
+            </div>
+            <div class="feature-text">
+              <h3>水质监测预测</h3>
+              <p>实时监测水温、盐度、pH 值、溶解氧等关键指标，AI 智能预测趋势</p>
+            </div>
+          </div>
+          
+          <div class="feature-item">
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 6v6l4 2"/>
+              </svg>
+            </div>
+            <div class="feature-text">
+              <h3>网箱智能管理</h3>
+              <p>全方位监控网箱状态，实时跟踪鱼类生长，智能预警异常情况</p>
+            </div>
+          </div>
+          
+          <div class="feature-item">
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2v20"/>
+                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+              </svg>
+            </div>
+            <div class="feature-text">
+              <h3>气象环境监控</h3>
+              <p>精准监测海洋气象数据，预测风暴潮、海浪等海洋灾害</p>
+            </div>
+          </div>
+          
+          <div class="feature-item">
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+              </svg>
+            </div>
+            <div class="feature-text">
+              <h3>PIT 鱼类追踪</h3>
+              <p>采用先进 PIT 技术，实现鱼类个体识别与行为轨迹追踪</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 技术支持 -->
+        <div class="tech-support">
+          <p>广东海洋大学 · 海洋科学与技术学院</p>
+          <p class="version">Tech Vision System v2.0</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 右侧登录表单 -->
+    <div class="form-section">
+      <div class="form-wrapper">
+        <!-- 登录表单 -->
+        <div class="form-content" v-if="!isRegister">
+          <div class="form-header">
+            <h2 class="form-title">欢迎回来</h2>
+            <p class="form-subtitle">请登录您的账户</p>
+          </div>
+          
+          <el-form
+            ref="form"
+            size="large"
+            autocomplete="off"
+            :model="registerData"
+            :rules="rules"
+            class="tech-form"
+          >
+            <el-form-item prop="username">
+              <el-input
+                :prefix-icon="User"
+                placeholder="请输入用户名"
+                v-model="registerData.username"
+                class="tech-input"
+              ></el-input>
+            </el-form-item>
+            
+            <el-form-item prop="password">
+              <el-input
+                name="password"
+                :prefix-icon="Lock"
+                type="password"
+                placeholder="请输入密码"
+                v-model="registerData.password"
+                class="tech-input"
+                @keyup.enter="login"
+              ></el-input>
+            </el-form-item>
+            
+            <el-form-item>
+              <el-button
+                class="tech-button tech-button--primary"
+                type="primary"
+                auto-insert-space
+                @click="login"
+              >
+                登录
+              </el-button>
+            </el-form-item>
+          </el-form>
+          
+          <div class="form-footer">
+            <span class="switch-text">还没有账户？</span>
+            <el-link type="primary" :underline="false" @click="isRegister = true">
+              立即注册
+            </el-link>
+          </div>
+        </div>
+
+        <!-- 注册表单 -->
+        <div class="form-content" v-else>
+          <div class="form-header">
+            <h2 class="form-title">创建账户</h2>
+            <p class="form-subtitle">加入海洋牧场监测系统</p>
+          </div>
+          
+          <el-form
+            ref="form"
+            size="large"
+            autocomplete="off"
+            :model="registerData"
+            :rules="rules"
+            class="tech-form"
+          >
+            <el-form-item prop="username">
+              <el-input
+                :prefix-icon="User"
+                placeholder="请输入用户名"
+                v-model="registerData.username"
+                class="tech-input"
+              ></el-input>
+            </el-form-item>
+            
+            <el-form-item prop="password">
+              <el-input
+                :prefix-icon="Lock"
+                type="password"
+                placeholder="请输入密码"
+                v-model="registerData.password"
+                class="tech-input"
+              ></el-input>
+            </el-form-item>
+            
+            <el-form-item prop="rePassword">
+              <el-input
+                :prefix-icon="Lock"
+                type="password"
+                placeholder="请再次输入密码"
+                v-model="registerData.rePassword"
+                class="tech-input"
+                @keyup.enter="register"
+              ></el-input>
+            </el-form-item>
+            
+            <el-form-item>
+              <el-button
+                class="tech-button tech-button--primary"
+                type="primary"
+                auto-insert-space
+                @click="register"
+              >
+                注册
+              </el-button>
+            </el-form-item>
+          </el-form>
+          
+          <div class="form-footer">
+            <span class="switch-text">已有账户？</span>
+            <el-link type="primary" :underline="false" @click="isRegister = false; clearRegisterData()">
+              立即登录
+            </el-link>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
 <script setup>
 import { User, Lock } from "@element-plus/icons-vue";
 import { ref } from "vue";
 import { ElMessage } from "element-plus";
+
 //控制注册与登录表单的显示， 默认显示注册
 const isRegister = ref(false);
 
@@ -70,148 +306,279 @@ const clearRegisterData = () => {
 };
 </script>
 
-<template>
-  <el-row class="login-page">
-    
-    <el-col :span="6" :offset="3" class="form">
-      <!-- 注册表单 -->
-      <el-form
-        ref="form"
-        size="large"
-        autocomplete="off"
-        v-if="isRegister"
-        :model="registerData"
-        :rules="rules"
-      >
-        <el-form-item>
-          <h1>注册</h1>
-        </el-form-item>
-        <el-form-item prop="username">
-          <el-input
-            :prefix-icon="User"
-            placeholder="请输入用户名"
-            v-model="registerData.username"
-          ></el-input>
-        </el-form-item>
-        <el-form-item prop="password">
-          <el-input
-            :prefix-icon="Lock"
-            type="password"
-            placeholder="请输入密码"
-            v-model="registerData.password"
-          ></el-input>
-        </el-form-item>
-        <el-form-item prop="rePassword">
-          <el-input
-            :prefix-icon="Lock"
-            type="password"
-            placeholder="请输入再次密码"
-            v-model="registerData.rePassword"
-          ></el-input>
-        </el-form-item>
-        <!-- 注册按钮 -->
-        <el-form-item>
-          <el-button
-            class="button"
-            type="primary"
-            auto-insert-space
-            @click="register"
-          >
-            注册
-          </el-button>
-        </el-form-item>
-        <el-form-item class="flex">
-          <el-link
-            type="info"
-            :underline="false"
-            @click="(isRegister = false), clearRegisterData()"
-          >
-            ← 返回
-          </el-link>
-        </el-form-item>
-      </el-form>
-      <!-- 登录表单 -->
-      <el-form
-        ref="form"
-        size="large"
-        autocomplete="off"
-        v-else
-        :model="registerData"
-        :rules="rules"
-      >
-        <el-form-item>
-          <h1>登录</h1>
-        </el-form-item>
-        <el-form-item prop="username">
-          <el-input
-            :prefix-icon="User"
-            placeholder="请输入用户名"
-            v-model="registerData.username"
-          ></el-input>
-        </el-form-item>
-        <el-form-item prop="password">
-          <el-input
-            name="password"
-            :prefix-icon="Lock"
-            type="password"
-            placeholder="请输入密码"
-            v-model="registerData.password"
-          ></el-input>
-        </el-form-item>
-        <el-form-item class="flex"> </el-form-item>
-        <!-- 登录按钮 -->
-        <el-form-item>
-          <el-button
-            class="button"
-            type="primary"
-            auto-insert-space
-            @click="login"
-            >登录</el-button
-          >
-        </el-form-item>
-        <el-form-item class="flex">
-          <el-link
-            type="info"
-            :underline="false"
-            @click="(isRegister = true), clearRegisterData()"
-          >
-            注册 →
-          </el-link>
-        </el-form-item>
-      </el-form>
-    </el-col>
-  </el-row>
-</template>
-
 <style lang="scss" scoped>
-/* 样式 */
-.login-page {
+@use '@/assets/main.scss';
+
+.login-container {
   height: 100vh;
-  background-color: #fff;
-  display: flex; /* 使用 flex 布局 */
-  justify-content: center; /* 水平居中 */
-  align-items: center; /* 垂直居中 */  
- 
+  display: flex;
+  position: relative;
+  overflow: hidden;
+}
 
-  .form {
-    display: flex;
+.system-intro {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-2xl);
+  position: relative;
+  z-index: 1;
+}
+
+.intro-content {
+  max-width: 600px;
+  width: 100%;
+}
+
+.logo-title-wrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-2xl);
+}
+
+.logo-icon {
+  width: 80px;
+  height: 80px;
+  color: var(--tech-cyan-400);
+  
+  .logo-svg {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 0 20px rgba(6, 182, 212, 0.6));
+  }
+}
+
+.title-wrapper {
+  .system-title {
+    font-size: 32px;
+    font-weight: 800;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: var(--spacing-xs);
+    letter-spacing: -0.02em;
+  }
+  
+  .system-subtitle {
+    font-size: 16px;
+    color: var(--tech-silver-400);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+}
+
+.intro-divider {
+  height: 2px;
+  background: var(--gradient-primary);
+  margin: var(--spacing-2xl) 0;
+  opacity: 0.5;
+}
+
+.feature-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-2xl);
+}
+
+.feature-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-lg);
+  background: rgba(59, 130, 246, 0.05);
+  border: 1px solid rgba(59, 130, 246, 0.1);
+  transition: all var(--transition-base);
+  
+  &:hover {
+    background: rgba(59, 130, 246, 0.1);
+    border-color: rgba(59, 130, 246, 0.3);
+    transform: translateX(4px);
+  }
+  
+  .feature-icon {
+    width: 40px;
+    height: 40px;
+    color: var(--tech-cyan-400);
+    flex-shrink: 0;
+    
+    svg {
+      width: 100%;
+      height: 100%;
+    }
+  }
+  
+  .feature-text {
+    flex: 1;
+    
+    h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--tech-cyan-400);
+      margin-bottom: var(--spacing-xs);
+    }
+    
+    p {
+      font-size: 14px;
+      color: var(--tech-silver-400);
+      line-height: 1.5;
+      margin: 0;
+    }
+  }
+}
+
+.tech-support {
+  text-align: center;
+  
+  p {
+    font-size: 14px;
+    color: var(--tech-silver-400);
+    margin-bottom: var(--spacing-xs);
+  }
+  
+  .version {
+    font-size: 12px;
+    color: rgba(156, 163, 175, 0.6);
+  }
+}
+
+.form-section {
+  width: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-2xl);
+  position: relative;
+  z-index: 1;
+}
+
+.form-wrapper {
+  width: 100%;
+  max-width: 360px;
+}
+
+.form-content {
+  background: rgba(17, 24, 39, 0.6);
+  backdrop-filter: blur(20px);
+  border-radius: var(--radius-xl);
+  border: var(--border-tech);
+  box-shadow: var(--shadow-xl);
+  padding: var(--spacing-2xl);
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--gradient-primary);
+  }
+}
+
+.form-header {
+  text-align: center;
+  margin-bottom: var(--spacing-xl);
+  
+  .form-title {
+    font-size: 28px;
+    font-weight: 700;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  .form-subtitle {
+    font-size: 14px;
+    color: var(--tech-silver-400);
+  }
+}
+
+.tech-form {
+  .el-form-item {
+    margin-bottom: var(--spacing-lg);
+  }
+}
+
+.tech-button {
+  width: 100%;
+  height: 48px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.form-footer {
+  text-align: center;
+  margin-top: var(--spacing-lg);
+  
+  .switch-text {
+    font-size: 14px;
+    color: var(--tech-silver-400);
+    margin-right: var(--spacing-xs);
+  }
+  
+  .el-link {
+    font-size: 14px;
+    font-weight: 600;
+  }
+}
+
+// 响应式优化
+@media (max-width: 1024px) {
+  .login-container {
     flex-direction: column;
+  }
+  
+  .system-intro {
+    padding: var(--spacing-xl);
+    flex: none;
+    height: auto;
+  }
+  
+  .form-section {
+    width: 100%;
+    flex: 1;
+  }
+  
+  .logo-title-wrapper {
     justify-content: center;
-    user-select: none;
+    text-align: center;
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+  
+  .feature-list {
+    gap: var(--spacing-md);
+  }
+}
 
-    .title {
-      margin: 0 auto;
-    }
-
-    .button {
-      width: 100%;
-    }
-
-    .flex {
-      width: 100%;
-      display: flex;
-      justify-content: space-between;
-    }
+@media (max-width: 768px) {
+  .system-intro {
+    padding: var(--spacing-lg);
+  }
+  
+  .form-section {
+    padding: var(--spacing-lg);
+  }
+  
+  .form-content {
+    padding: var(--spacing-xl);
+  }
+  
+  .system-title {
+    font-size: 24px !important;
+  }
+  
+  .form-title {
+    font-size: 24px !important;
   }
 }
 </style>
