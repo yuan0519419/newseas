@@ -3,7 +3,7 @@
     <h1>南海智能化牧场数据监测平台助手</h1>
     
     <!-- 后端返回数据显示区域 -->
-    <div class="response-box">
+    <div class="response-box" ref="responseBox">
       <h2>小海智能助手</h2>
       <div class="response-content">
         <div v-if="responses.length === 0" class="empty-state">
@@ -37,7 +37,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, nextTick } from 'vue';
 import { getAnswerService } from '@/api/methods';
 // 用户输入的问题
 const userQuestion = ref('');
@@ -45,31 +45,42 @@ const userQuestion = ref('');
 // 存储问题和对应的回答
 const responses = ref([]);
 
-// 提交问题处理函数
-const submitQuestion = async () => {
+// 响应框引用
+const responseBox = ref(null);
 
-
-  
-  const question = userQuestion.value.trim();
-  if (!question) return;
- userQuestion.value = '';
-let result= await getAnswerService(question);
-
-
-  // 添加到响应列表
-  responses.value.push({
-    question: question,
-    answer: result.data
-  });
-
-
-
-  
- 
-  // 清空输入框
- 
+// 自动滚动到响应框底部
+const scrollToBottom = async () => {
+  await nextTick();
+  if (responseBox.value) {
+    responseBox.value.scrollTop = responseBox.value.scrollHeight;
+  }
 };
 
+// 提交问题处理函数
+const submitQuestion = async () => {
+  try {
+    const question = userQuestion.value.trim();
+    if (!question) return;
+    
+    // 清空输入框
+    userQuestion.value = '';
+    
+    // 调用API获取回答
+    let result = await getAnswerService(question);
+    
+    // 添加到响应列表
+    responses.value.push({
+      question: question,
+      answer: result.data
+    });
+    
+    // 自动滚动到最底部
+    scrollToBottom();
+  } catch (error) {
+    console.error('提交问题失败:', error);
+    // 可以添加错误提示
+  }
+};
 
 </script>
 
