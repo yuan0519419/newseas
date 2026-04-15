@@ -99,20 +99,6 @@
             <span>PIT游泳动物跟踪遥测</span>
           </el-menu-item>
         </div>
-
-        <div class="menu-section">
-          <div class="menu-section-title">
-            <span class="section-icon">
-              <Cpu />
-            </span>
-            智能助手
-          </div>
-          
-          <el-menu-item index="/chatModel">
-            <el-icon class="menu-icon"><Cpu /></el-icon>
-            <span>南海智能化牧场数据监测平台助手</span>
-          </el-menu-item>
-        </div>
       </el-menu>
 
       <div class="aside-footer">
@@ -176,6 +162,9 @@
         </div>
       </el-footer>
     </el-container>
+    
+    <!-- 智能助手组件 -->
+    <SmartAssistant />
   </el-container>
 </template>
 
@@ -203,6 +192,7 @@ import avatar from "@/assets/default.png";
 import { userInfoService } from "@/api/user.js";
 import useUserInfoStore from "@/stores/userInfo.js";
 import { useTokenStore } from "@/stores/token.js";
+import SmartAssistant from "@/views/SmartAssistant.vue";
 
 const tokenStore = useTokenStore();
 const userInfoStore = useUserInfoStore();

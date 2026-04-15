@@ -14,7 +14,7 @@ import t from '@/views/netCage/t.vue'
 import pit from '@/views/pit.vue'
 import pit2 from '@/views/pit2.vue'
 import fish from '@/views/netCage/fish_ai_yield.vue'
-import chatModelVue from '@/views/netCage/chatModel.vue'
+
 import chatVue from '@/views/netCage/chat.vue'
 // import methods from '@/views/netCage/methods.vue'
 import pit3 from '@/views/pit3.vue'
@@ -35,7 +35,7 @@ const routers = [
         { path: '/weather', component: weather },
         { path: '/t', component: t },
         { path: '/fish', component: fish },
-        { path: '/chatModel', component: chatModelVue },
+
         { path: '/chat', component: chatVue },
         // { path: '/methods', component: methods },
         { path: '/pit3', component: pit3 },

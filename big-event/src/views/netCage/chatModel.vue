@@ -6,15 +6,17 @@
     <div class="response-box" ref="responseBox">
       <h2>小海智能助手</h2>
       <div class="response-content">
-        <div v-if="responses.length === 0" class="empty-state">
+        <div v-if="messages.length === 0" class="empty-state">
           等待您输入问题...
         </div>
-        <div v-for="(response, index) in responses" :key="index" class="response-item">
-          <div class="response-question">
-            <strong>问题:</strong> {{ response.question }}
-          </div>
-          <div class="response-answer">
-            <strong>回答:</strong> {{ response.answer }}
+        <div v-for="(message, index) in messages" :key="index" :class="['message', message.role]">
+          <div class="message-content">
+            <div v-if="message.role === 'user'" class="message-text user-message">
+              {{ message.content }}
+            </div>
+            <div v-else class="message-text ai-message">
+              {{ message.content }}
+            </div>
           </div>
         </div>
       </div>
@@ -42,8 +44,8 @@ import { getAnswerService } from '@/api/methods';
 // 用户输入的问题
 const userQuestion = ref('');
 
-// 存储问题和对应的回答
-const responses = ref([]);
+// 存储消息列表
+const messages = ref([]);
 
 // 响应框引用
 const responseBox = ref(null);
@@ -65,13 +67,22 @@ const submitQuestion = async () => {
     // 清空输入框
     userQuestion.value = '';
     
+    // 添加用户消息到列表
+    messages.value.push({
+      role: 'user',
+      content: question
+    });
+    
+    // 自动滚动到最底部
+    scrollToBottom();
+    
     // 调用API获取回答
     let result = await getAnswerService(question);
     
-    // 添加到响应列表
-    responses.value.push({
-      question: question,
-      answer: result.data
+    // 添加AI回答到列表
+    messages.value.push({
+      role: 'ai',
+      content: result.data
     });
     
     // 自动滚动到最底部
@@ -154,31 +165,55 @@ h2 {
 
 .response-content {
   margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-.response-item {
-  padding: 10px;
-  border-radius: 6px;
-  background: rgba(10, 14, 26, 0.6);
-  border: 1px solid rgba(59, 130, 246, 0.2);
+.message {
+  display: flex;
+  align-items: flex-end;
   margin-bottom: 10px;
-  transition: all 0.3s ease;
   
-  &:hover {
-    border-color: rgba(59, 130, 246, 0.4);
-    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+  &.user {
+    justify-content: flex-end;
+  }
+  
+  &.ai {
+    justify-content: flex-start;
   }
 }
 
-.response-question {
-  margin-bottom: 6px;
-  color: var(--tech-blue-400);
-  font-weight: 600;
+.message-content {
+  max-width: 70%;
+  
+  .user & {
+    text-align: right;
+  }
+  
+  .ai & {
+    text-align: left;
+  }
 }
 
-.response-answer {
-  color: var(--tech-blue-300);
+.message-text {
+  padding: 10px 15px;
+  border-radius: 18px;
   line-height: 1.5;
+  word-wrap: break-word;
+  
+  &.user-message {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    border-bottom-right-radius: 4px;
+  }
+  
+  &.ai-message {
+    background: rgba(10, 14, 26, 0.6);
+    color: var(--tech-blue-300);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-bottom-left-radius: 4px;
+  }
 }
 
 .empty-state {
