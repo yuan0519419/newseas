@@ -46,10 +46,7 @@
           <div class="feature-item">
             <div class="feature-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M3 6l9-4 9 4v6c0 5.55-3.84 10.74-9 12-5.16-1.26-9-6.45-9-12V6z"/>
-                <path d="M3 6h18"/>
-                <path d="M9 10h6"/>
-                <path d="M9 14h6"/>
+                <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
               </svg>
             </div>
             <div class="feature-text">
@@ -61,8 +58,8 @@
           <div class="feature-item">
             <div class="feature-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="10"/>
-                <path d="M12 6v6l4 2"/>
+                <path d="M20 7h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v3H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2z"/>
+                <path d="M16 17c0 1.1-.9 2-2 2h-4c-1.1 0-2-.9-2-2v-1h8v1z"/>
               </svg>
             </div>
             <div class="feature-text">
@@ -74,8 +71,7 @@
           <div class="feature-item">
             <div class="feature-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12 2v20"/>
-                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>
               </svg>
             </div>
             <div class="feature-text">
@@ -87,7 +83,10 @@
           <div class="feature-item">
             <div class="feature-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                <path d="M12 12c-2 0-4 2-4 4s2 4 4 4 4-2 4-4-2-4-4-4z"/>
+                <path d="M12 8v4"/>
+                <path d="M10 10h4"/>
               </svg>
             </div>
             <div class="feature-text">
@@ -96,12 +95,14 @@
             </div>
           </div>
         </div>
-        
-        <!-- 技术支持 -->
-        <div class="tech-support">
-          <p>广东海洋大学 · 海洋科学与技术学院</p>
-          <p class="version">Tech Vision System v2.0</p>
-        </div>
+      </div>
+    </div>
+    
+    <!-- 页面底部技术支持信息 -->
+    <div class="page-footer">
+      <div class="tech-support">
+        <p>广东海洋大学 · 海洋科学与技术学院</p>
+        <p class="version">Tech Vision System v2.0</p>
       </div>
     </div>
 
@@ -314,6 +315,19 @@ const clearRegisterData = () => {
   display: flex;
   position: relative;
   overflow: hidden;
+  flex-direction: row;
+}
+
+.page-footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: var(--spacing-lg);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
 }
 
 .system-intro {
@@ -557,6 +571,10 @@ const clearRegisterData = () => {
   
   .feature-list {
     gap: var(--spacing-md);
+  }
+  
+  .page-footer {
+    padding: var(--spacing-md);
   }
 }
 
