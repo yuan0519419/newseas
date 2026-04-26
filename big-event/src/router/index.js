@@ -15,7 +15,7 @@ import pit from '@/views/pit.vue'
 import pit2 from '@/views/pit2.vue'
 import fish from '@/views/netCage/fish_ai_yield.vue'
 
-import chatVue from '@/views/netCage/chat.vue'
+import ai from '@/views/netCage/ai.vue'
 // import methods from '@/views/netCage/methods.vue'
 import pit3 from '@/views/pit3.vue'
 //路由关系的定义
@@ -36,7 +36,7 @@ const routers = [
         { path: '/t', component: t },
         { path: '/fish', component: fish },
 
-        { path: '/chat', component: chatVue },
+        { path: '/ai', component: ai },
         // { path: '/methods', component: methods },
         { path: '/pit3', component: pit3 },
     ]}

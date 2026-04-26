@@ -412,17 +412,14 @@ const deleteCage = (row) => {
     padding: var(--spacing-lg);
     background: rgba(17, 24, 39, 0.6);
     backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(59, 130, 246, 0.3);
+    border-bottom: 1px solid rgba(6, 182, 212, 0.3);
     position: relative;
     z-index: 1;
     
     span {
       font-size: 18px;
       font-weight: 600;
-      background: linear-gradient(90deg, #3B82F6, #60A5FA);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      color: #67e8f9;
     }
     
     .extra {
@@ -458,12 +455,12 @@ const deleteCage = (row) => {
     
     th {
       background: var(--tech-blue-800) !important;
-      color: #60A5FA !important;
+      color: #67e8f9 !important;
       font-weight: 600;
-      border-bottom: 1px solid rgba(59, 130, 246, 0.3);
+      border-bottom: 1px solid rgba(6, 182, 212, 0.3);
       
       .cell {
-        color: #60A5FA !important;
+        color: #67e8f9 !important;
         font-weight: 600;
       }
     }

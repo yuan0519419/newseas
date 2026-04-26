@@ -147,7 +147,7 @@ const initData = (realData, predictedData, domId, title, dataKey) => {
       textStyle: {
         fontSize: 16,
         fontWeight: 'bold',
-        color: '#1a56db'
+        color: '#67e8f9'
       },
       padding: [0, 0, 15, 0]
     },
@@ -157,7 +157,7 @@ const initData = (realData, predictedData, domId, title, dataKey) => {
         type: 'shadow'
       },
       backgroundColor: 'rgba(255, 255, 255, 0.9)',
-      borderColor: '#1a56db',
+      borderColor: '#67e8f9',
       borderWidth: 1,
       padding: 10,
       textStyle: { color: '#333' },
@@ -168,7 +168,7 @@ const initData = (realData, predictedData, domId, title, dataKey) => {
     legend: {
       data: ['真实值', '预测值'],
       top: 30,
-      textStyle: { color: '#666' }
+      textStyle: { color: '#67e8f9' }
     },
     grid: {
       left: '3%',
@@ -180,16 +180,16 @@ const initData = (realData, predictedData, domId, title, dataKey) => {
       data: sortedRealData.map(item => item.sampleTime),
       axisLabel: {
         formatter: (value) => format.formatTime('MM-dd hh:mm', value),
-        color: '#666',
+        color: '#67e8f9',
         rotate: 30,
         interval: 2
       },
-      axisLine: { lineStyle: { color: '#e0e0e0' } }
+      axisLine: { lineStyle: { color: '#67e8f9' } }
     },
     yAxis: {
-      axisLabel: { color: '#666' },
-      axisLine: { lineStyle: { color: '#e0e0e0' } },
-      splitLine: { lineStyle: { color: '#f0f0f0' } }
+      axisLabel: { color: '#67e8f9' },
+      axisLine: { lineStyle: { color: '#67e8f9' } },
+      splitLine: { lineStyle: { color: 'rgba(6, 182, 212, 0.2)' } }
     },
     series: [
       {
@@ -197,11 +197,11 @@ const initData = (realData, predictedData, domId, title, dataKey) => {
         type: 'line',
         data: sortedRealData.map(item => item[dataKey]),
         lineStyle: { 
-          color: '#1a56db',
+          color: '#0e7490',
           width: 2
         },
         itemStyle: {
-          color: '#1a56db',
+          color: '#0e7490',
           borderWidth: 2,
           borderColor: '#fff'
         },
@@ -212,8 +212,8 @@ const initData = (realData, predictedData, domId, title, dataKey) => {
         },
         areaStyle: {
           color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-            { offset: 0, color: 'rgba(26, 86, 219, 0.3)' },
-            { offset: 1, color: 'rgba(26, 86, 219, 0)' }
+            { offset: 0, color: 'rgba(14, 116, 144, 0.3)' },
+            { offset: 1, color: 'rgba(14, 116, 144, 0)' }
           ])
         }
       },
@@ -358,9 +358,9 @@ const DataRefresh = async () => {
   }
 }
 
-// 图表标题样式 - 深蓝色
+// 图表标题样式 - 青色
 :deep(.echarts-title) {
-  color: var(--tech-blue-600) !important;
+  color: #67e8f9 !important;
   font-weight: 600;
   font-size: 16px;
   text-align: center;

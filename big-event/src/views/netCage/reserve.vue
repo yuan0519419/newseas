@@ -357,10 +357,10 @@ const deleteReserve = (row) => {
 .page-container {
   min-height: 100%;
   box-sizing: border-box;
-  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
-  border: 1px solid rgba(139, 92, 246, 0.3);
+  background: linear-gradient(135deg, #0a0e1a 0%, #1a1f2e 100%);
+  border: 1px solid rgba(59, 130, 246, 0.3);
   border-radius: var(--radius-lg);
-  box-shadow: 0 0 30px rgba(139, 92, 246, 0.2);
+  box-shadow: 0 0 30px rgba(59, 130, 246, 0.2);
   position: relative;
   overflow: hidden;
   
@@ -383,9 +383,9 @@ const deleteReserve = (row) => {
     width: 200%;
     height: 200%;
     background: 
-      radial-gradient(circle at 40% 40%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
-      radial-gradient(circle at 60% 60%, rgba(30, 27, 75, 0.3) 0%, transparent 50%);
-    animation: pulse 20s ease-in-out infinite;
+      radial-gradient(circle at 25% 25%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 75% 75%, rgba(10, 14, 26, 0.3) 0%, transparent 50%);
+    animation: wave 15s ease-in-out infinite;
   }
 
   .header {
@@ -395,17 +395,14 @@ const deleteReserve = (row) => {
     padding: var(--spacing-lg);
     background: rgba(17, 24, 39, 0.6);
     backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(139, 92, 246, 0.3);
+    border-bottom: 1px solid rgba(6, 182, 212, 0.3);
     position: relative;
     z-index: 1;
     
     span {
       font-size: 18px;
       font-weight: 600;
-      background: linear-gradient(90deg, #8b5cf6, #a78bfa);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      color: #67e8f9;
     }
     
     .extra {
@@ -416,15 +413,15 @@ const deleteReserve = (row) => {
   }
 }
 
-@keyframes pulse {
+@keyframes wave {
   0% {
-    transform: translate(0, 0) scale(1);
+    transform: translate(0, 0) rotate(0deg);
   }
   50% {
-    transform: translate(5%, 5%) scale(1.05);
+    transform: translate(-10%, -10%) rotate(180deg);
   }
   100% {
-    transform: translate(0, 0) scale(1);
+    transform: translate(0, 0) rotate(360deg);
   }
 }
 
@@ -432,7 +429,7 @@ const deleteReserve = (row) => {
 :deep(.el-table) {
   background: transparent !important;
   border: none;
-  color: #c4b5fd;
+  color: #93C5FD;
   position: relative;
   z-index: 1;
   
@@ -441,12 +438,12 @@ const deleteReserve = (row) => {
     
     th {
       background: var(--tech-blue-800) !important;
-      color: #a78bfa !important;
+      color: #67e8f9 !important;
       font-weight: 600;
-      border-bottom: 1px solid rgba(139, 92, 246, 0.3);
+      border-bottom: 1px solid rgba(6, 182, 212, 0.3);
       
       .cell {
-        color: #a78bfa !important;
+        color: #67e8f9 !important;
         font-weight: 600;
       }
     }
@@ -455,19 +452,19 @@ const deleteReserve = (row) => {
   .el-table__body {
     tr {
       background: rgba(17, 24, 39, 0.4) !important;
-      color: #c4b5fd !important;
+      color: #93C5FD !important;
       
       &:hover > td {
-        background: rgba(139, 92, 246, 0.1) !important;
+        background: rgba(59, 130, 246, 0.1) !important;
       }
       
       td {
         background: transparent !important;
-        border-bottom: 1px solid rgba(139, 92, 246, 0.1);
-        color: #c4b5fd !important;
+        border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+        color: #93C5FD !important;
         
         .cell {
-          color: #c4b5fd !important;
+          color: #93C5FD !important;
         }
       }
     }
@@ -475,7 +472,7 @@ const deleteReserve = (row) => {
   
   .el-table__empty-block {
     background: rgba(17, 24, 39, 0.4) !important;
-    color: #c4b5fd;
+    color: #93C5FD;
   }
 }
 

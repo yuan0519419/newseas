@@ -357,10 +357,10 @@ const deleteEqp = (row) => {
 .page-container {
   min-height: 100%;
   box-sizing: border-box;
-  background: linear-gradient(135deg, #1a110f 0%, #2d1d1a 100%);
-  border: 1px solid rgba(249, 115, 22, 0.3);
+  background: linear-gradient(135deg, #0a0e1a 0%, #1a1f2e 100%);
+  border: 1px solid rgba(59, 130, 246, 0.3);
   border-radius: var(--radius-lg);
-  box-shadow: 0 0 30px rgba(249, 115, 22, 0.2);
+  box-shadow: 0 0 30px rgba(59, 130, 246, 0.2);
   position: relative;
   overflow: hidden;
   
@@ -383,9 +383,9 @@ const deleteEqp = (row) => {
     width: 200%;
     height: 200%;
     background: 
-      radial-gradient(circle at 35% 35%, rgba(249, 115, 22, 0.1) 0%, transparent 50%),
-      radial-gradient(circle at 65% 65%, rgba(26, 17, 15, 0.3) 0%, transparent 50%);
-    animation: gear 18s ease-in-out infinite;
+      radial-gradient(circle at 25% 25%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 75% 75%, rgba(10, 14, 26, 0.3) 0%, transparent 50%);
+    animation: wave 15s ease-in-out infinite;
   }
 
   .header {
@@ -395,17 +395,14 @@ const deleteEqp = (row) => {
     padding: var(--spacing-lg);
     background: rgba(17, 24, 39, 0.6);
     backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(249, 115, 22, 0.3);
+    border-bottom: 1px solid rgba(6, 182, 212, 0.3);
     position: relative;
     z-index: 1;
     
     span {
       font-size: 18px;
       font-weight: 600;
-      background: linear-gradient(90deg, #f97316, #fb923c);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      color: #67e8f9;
     }
     
     .extra {
@@ -416,12 +413,12 @@ const deleteEqp = (row) => {
   }
 }
 
-@keyframes gear {
+@keyframes wave {
   0% {
     transform: translate(0, 0) rotate(0deg);
   }
   50% {
-    transform: translate(-5%, -5%) rotate(180deg);
+    transform: translate(-10%, -10%) rotate(180deg);
   }
   100% {
     transform: translate(0, 0) rotate(360deg);
@@ -432,7 +429,7 @@ const deleteEqp = (row) => {
 :deep(.el-table) {
   background: transparent !important;
   border: none;
-  color: #fdba74;
+  color: #93C5FD;
   position: relative;
   z-index: 1;
   
@@ -441,12 +438,12 @@ const deleteEqp = (row) => {
     
     th {
       background: var(--tech-blue-800) !important;
-      color: #fb923c !important;
+      color: #67e8f9 !important;
       font-weight: 600;
-      border-bottom: 1px solid rgba(249, 115, 22, 0.3);
+      border-bottom: 1px solid rgba(6, 182, 212, 0.3);
       
       .cell {
-        color: #fb923c !important;
+        color: #67e8f9 !important;
         font-weight: 600;
       }
     }
@@ -455,19 +452,19 @@ const deleteEqp = (row) => {
   .el-table__body {
     tr {
       background: rgba(17, 24, 39, 0.4) !important;
-      color: #fdba74 !important;
+      color: #93C5FD !important;
       
       &:hover > td {
-        background: rgba(249, 115, 22, 0.1) !important;
+        background: rgba(59, 130, 246, 0.1) !important;
       }
       
       td {
         background: transparent !important;
-        border-bottom: 1px solid rgba(249, 115, 22, 0.1);
-        color: #fdba74 !important;
+        border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+        color: #93C5FD !important;
         
         .cell {
-          color: #fdba74 !important;
+          color: #93C5FD !important;
         }
       }
     }
@@ -475,7 +472,7 @@ const deleteEqp = (row) => {
   
   .el-table__empty-block {
     background: rgba(17, 24, 39, 0.4) !important;
-    color: #fdba74;
+    color: #93C5FD;
   }
 }
 

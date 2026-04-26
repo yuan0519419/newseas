@@ -99,12 +99,26 @@
             <span>PIT游泳动物跟踪遥测</span>
           </el-menu-item>
         </div>
+
+        <div class="menu-section">
+          <div class="menu-section-title">
+            <span class="section-icon">
+              <Cpu />
+            </span>
+            AI决策
+          </div>
+          
+          <el-menu-item index="/ai">
+            <el-icon class="menu-icon"><MagicStick /></el-icon>
+            <span>AI决策</span>
+          </el-menu-item>
+        </div>
       </el-menu>
 
       <div class="aside-footer">
         <div class="university-info">
           <p>广东海洋大学</p>
-          <p class="college">海洋科学与技术学院</p>
+          <p class="college">识鱼团队</p>
         </div>
       </div>
     </el-aside>
@@ -156,7 +170,7 @@
       <!-- 科技风页脚 -->
       <el-footer class="tech-footer">
         <div class="footer-content">
-          <span>© 2025 广东海洋大学 · 海洋科学与技术学院</span>
+          <span>广东海洋大学 · 识鱼团队</span>
           <span class="footer-divider">|</span>
           <span>Tech Vision System v2.0</span>
         </div>
@@ -187,6 +201,8 @@ import {
   DataAnalysis,
   MostlyCloudy,
   Monitor,
+  ChatDotRound,
+  MagicStick,
 } from "@element-plus/icons-vue";
 import avatar from "@/assets/default.png";
 import { userInfoService } from "@/api/user.js";
@@ -359,7 +375,7 @@ const handleCommand = (command) => {
   }
   
   .menu-section-title {
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 600;
     color: var(--tech-silver-400);
     text-transform: uppercase;

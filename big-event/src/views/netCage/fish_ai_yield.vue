@@ -247,11 +247,11 @@ video {
 }
 
 .text-tech-blue-600 {
-  color: var(--tech-blue-600);
+  color: #67e8f9;
 }
 
 .text-tech-blue-400 {
-  color: var(--tech-blue-400);
+  color: #67e8f9;
 }
 
 /* 表格样式 */
@@ -265,12 +265,12 @@ video {
     
     th {
       background: var(--tech-blue-800) !important;
-      color: var(--tech-blue-600) !important;
+      color: #67e8f9 !important;
       font-weight: 600;
-      border-bottom: 1px solid rgba(59, 130, 246, 0.3);
+      border-bottom: 1px solid rgba(6, 182, 212, 0.3);
       
       .cell {
-        color: var(--tech-blue-600) !important;
+        color: #67e8f9 !important;
         font-weight: 600;
       }
     }

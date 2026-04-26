@@ -515,14 +515,12 @@ const deleteSeaData = (row) => {
     padding: var(--spacing-lg);
     background: rgba(17, 24, 39, 0.6);
     backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(6, 182, 212, 0.3);
     
     span {
       font-size: 18px;
       font-weight: 600;
-      background: var(--gradient-primary);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      color: #67e8f9;
     }
     
     .extra {
@@ -544,12 +542,12 @@ const deleteSeaData = (row) => {
     
     th {
       background: var(--tech-blue-800) !important;
-      color: var(--tech-blue-600) !important;
+      color: #67e8f9 !important;
       font-weight: 600;
-      border-bottom: 1px solid rgba(59, 130, 246, 0.3);
+      border-bottom: 1px solid rgba(6, 182, 212, 0.3);
       
       .cell {
-        color: var(--tech-blue-600) !important;
+        color: #67e8f9 !important;
         font-weight: 600;
       }
     }

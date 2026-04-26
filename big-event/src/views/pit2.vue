@@ -385,8 +385,8 @@ onUnmounted(() => {
   font-size: 24px;
   font-weight: bold;
   margin-bottom: 5px;
-  color: white;
-  text-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+  color: #67e8f9;
+  text-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
 }
 
 .subtitle {
@@ -532,7 +532,7 @@ onUnmounted(() => {
 
 .reef-info h3 {
   margin: 0 0 10px 0;
-  color: var(--tech-blue-600);
+  color: #67e8f9;
   font-size: 18px;
   font-weight: 600;
 }

@@ -374,10 +374,10 @@ const deleteWeather = (row) => {
 .page-container {
   min-height: 100%;
   box-sizing: border-box;
-  background: linear-gradient(135deg, #0c1322 0%, #1e293b 100%);
-  border: 1px solid rgba(34, 197, 94, 0.3);
+  background: linear-gradient(135deg, #0a0e1a 0%, #1a1f2e 100%);
+  border: 1px solid rgba(59, 130, 246, 0.3);
   border-radius: var(--radius-lg);
-  box-shadow: 0 0 30px rgba(34, 197, 94, 0.2);
+  box-shadow: 0 0 30px rgba(59, 130, 246, 0.2);
   position: relative;
   overflow: hidden;
   
@@ -400,9 +400,9 @@ const deleteWeather = (row) => {
     width: 200%;
     height: 200%;
     background: 
-      radial-gradient(circle at 30% 30%, rgba(34, 197, 94, 0.1) 0%, transparent 50%),
-      radial-gradient(circle at 70% 70%, rgba(12, 19, 34, 0.3) 0%, transparent 50%);
-    animation: cloud 20s ease-in-out infinite;
+      radial-gradient(circle at 25% 25%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 75% 75%, rgba(10, 14, 26, 0.3) 0%, transparent 50%);
+    animation: wave 15s ease-in-out infinite;
   }
 
   .header {
@@ -412,17 +412,14 @@ const deleteWeather = (row) => {
     padding: var(--spacing-lg);
     background: rgba(17, 24, 39, 0.6);
     backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(34, 197, 94, 0.3);
+    border-bottom: 1px solid rgba(6, 182, 212, 0.3);
     position: relative;
     z-index: 1;
     
     span {
       font-size: 18px;
       font-weight: 600;
-      background: linear-gradient(90deg, #22c55e, #4ade80);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      color: #67e8f9;
     }
     
     .extra {
@@ -433,15 +430,15 @@ const deleteWeather = (row) => {
   }
 }
 
-@keyframes cloud {
+@keyframes wave {
   0% {
-    transform: translate(0, 0) scale(1);
+    transform: translate(0, 0) rotate(0deg);
   }
   50% {
-    transform: translate(10%, 10%) scale(1.1);
+    transform: translate(-10%, -10%) rotate(180deg);
   }
   100% {
-    transform: translate(0, 0) scale(1);
+    transform: translate(0, 0) rotate(360deg);
   }
 }
 
@@ -449,7 +446,7 @@ const deleteWeather = (row) => {
 :deep(.el-table) {
   background: transparent !important;
   border: none;
-  color: #86efac;
+  color: #93C5FD;
   position: relative;
   z-index: 1;
   
@@ -458,12 +455,12 @@ const deleteWeather = (row) => {
     
     th {
       background: var(--tech-blue-800) !important;
-      color: #4ade80 !important;
+      color: #67e8f9 !important;
       font-weight: 600;
-      border-bottom: 1px solid rgba(34, 197, 94, 0.3);
+      border-bottom: 1px solid rgba(6, 182, 212, 0.3);
       
       .cell {
-        color: #4ade80 !important;
+        color: #67e8f9 !important;
         font-weight: 600;
       }
     }
@@ -472,19 +469,19 @@ const deleteWeather = (row) => {
   .el-table__body {
     tr {
       background: rgba(17, 24, 39, 0.4) !important;
-      color: #86efac !important;
+      color: #93C5FD !important;
       
       &:hover > td {
-        background: rgba(34, 197, 94, 0.1) !important;
+        background: rgba(59, 130, 246, 0.1) !important;
       }
       
       td {
         background: transparent !important;
-        border-bottom: 1px solid rgba(34, 197, 94, 0.1);
-        color: #86efac !important;
+        border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+        color: #93C5FD !important;
         
         .cell {
-          color: #86efac !important;
+          color: #93C5FD !important;
         }
       }
     }
@@ -492,7 +489,7 @@ const deleteWeather = (row) => {
   
   .el-table__empty-block {
     background: rgba(17, 24, 39, 0.4) !important;
-    color: #86efac;
+    color: #93C5FD;
   }
 }
 

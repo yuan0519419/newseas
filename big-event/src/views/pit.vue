@@ -275,7 +275,7 @@ onUnmounted(() => {
   box-shadow: var(--shadow-md);
   
   .el-card__header {
-    border-bottom: 1px solid rgba(59, 130, 246, 0.3) !important;
+    border-bottom: 1px solid rgba(6, 182, 212, 0.3) !important;
   }
 }
 
@@ -283,7 +283,7 @@ onUnmounted(() => {
   margin: 0;
   font-size: 1.25rem;
   font-weight: bold;
-  color: var(--tech-blue-600);
+  color: #67e8f9;
 }
 
 .video-wrapper {
@@ -303,7 +303,7 @@ onUnmounted(() => {
   background-color: #000;
   border-radius: 4px;
   overflow: hidden;
-  border: 1px solid rgba(59, 130, 246, 0.3);
+  border: 1px solid rgba(6, 182, 212, 0.3);
 }
 
 video {
@@ -324,7 +324,7 @@ video {
   box-shadow: var(--shadow-md);
   
   .el-card__header {
-    border-bottom: 1px solid rgba(59, 130, 246, 0.3) !important;
+    border-bottom: 1px solid rgba(6, 182, 212, 0.3) !important;
   }
 }
 
@@ -338,7 +338,7 @@ video {
   margin: 0;
   font-size: 1.25rem;
   font-weight: bold;
-  color: var(--tech-blue-600);
+  color: #67e8f9;
 }
 
 .chart-container {

@@ -23,8 +23,8 @@
         三亚蜈支洲岛国家级海洋牧场
       </div>
       <div class="signal-buttons">
-        <el-button type="primary" @click="startSimulation">信号启动</el-button>
-        <el-button type="warning" @click="stopSimulation">信号关闭</el-button>
+        <el-button type="warning" @click="startSimulation">信号启动</el-button>
+        <el-button type="primary" @click="stopSimulation">信号关闭</el-button>
       </div>
     </div>
 
@@ -506,8 +506,8 @@ onUnmounted(() => {
   font-size: 30px;
   font-weight: bold;
   margin-bottom: 5px;
-  color: rgba(255, 255, 255, 0.7);
-  text-shadow: 0 0 5px rgba(59, 130, 246, 0.3);
+  color: #67e8f9;
+  text-shadow: 0 0 5px rgba(6, 182, 212, 0.3);
 }
 
 .marine-ranch-container {
@@ -526,13 +526,13 @@ onUnmounted(() => {
   font-size: 24px;
   font-weight: bold;
   text-align: left;
-  color: var(--tech-blue-600);
+  color: #67e8f9;
   padding: 10px;
   background: rgba(10, 14, 26, 0.6);
   border-radius: 8px;
   flex-grow: 1;
   margin-right: 10px;
-  border: 1px solid rgba(59, 130, 246, 0.3);
+  border: 1px solid rgba(6, 182, 212, 0.3);
 }
 
 .signal-buttons {
@@ -581,7 +581,7 @@ onUnmounted(() => {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(10, 14, 26, 0.3);
+    background: rgba(10, 14, 26, 0.1);
     z-index: 0;
   }
 }
@@ -616,6 +616,7 @@ onUnmounted(() => {
   width: 100%;
   height: 100%;
   object-fit: contain;
+  filter: brightness(1.3); /* 增加亮度 */
 }
 
 .indicator-container {
@@ -643,9 +644,9 @@ onUnmounted(() => {
 }
 
 .indicator-icon.indicator-active {
-  color: #EF4444; /* 红色 - 激活状态 */
+  color: #F59E0B; /* 黄色 - 激活状态 */
   animation: pulse 0.8s infinite;
-  filter: drop-shadow(0 0 10px rgba(239, 68, 68, 0.8)); /* 添加红色辉光效果 */
+  filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.8)); /* 添加黄色辉光效果 */
 }
 
 @keyframes pulse {
