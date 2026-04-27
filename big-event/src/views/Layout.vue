@@ -118,7 +118,7 @@
       <div class="aside-footer">
         <div class="university-info">
           <p>广东海洋大学</p>
-          <p class="college">识鱼团队</p>
+          <p class="college">海大识鱼团队</p>
         </div>
       </div>
     </el-aside>
@@ -170,7 +170,7 @@
       <!-- 科技风页脚 -->
       <el-footer class="tech-footer">
         <div class="footer-content">
-          <span>广东海洋大学 · 识鱼团队</span>
+          <span>广东海洋大学 · 海大识鱼团队</span>
           <span class="footer-divider">|</span>
           <span>Tech Vision System v2.0</span>
         </div>
