@@ -3,7 +3,7 @@
     <div class="header">
       <h1>关键因子多协同研判</h1>
       <div class="header-actions">
-        <el-button :type="dataRange === 'recent10' ? 'primary' : 'info'" size="small" @click="toggleDataRange">
+        <el-button type="primary" size="small" @click="toggleDataRange">
           {{ dataRange === 'recent10' ? '近10条数据' : '最新1条数据' }}
         </el-button>
       </div>
@@ -202,6 +202,7 @@
 import { ref, onMounted, onUnmounted, nextTick, watch } from 'vue'
 import * as echarts from 'echarts'
 import oceanVideoUrl from '@/assets/ocean-video.mp4'
+import { seaDataLatestTenService, seaDataLatestService } from '@/api/sea.js'
 
 const dataRange = ref('recent10')
 const isRecording = ref(false)
@@ -210,6 +211,10 @@ const aiEnabled = ref(true)
 const decisionStatus = ref('good')
 const currentTime = ref('')
 const videoPlayer = ref(null)
+
+// 后端数据
+const seaDataList = ref([]) // 最新十条数据
+const latestSeaData = ref(null) // 最新一条数据
 
 let charts = []
 let timeInterval = null
@@ -262,6 +267,89 @@ const getStatusClass = (value, index) => {
   return 'status-warning'
 }
 
+// 获取最新十条数据
+const getLatestTenData = async () => {
+  try {
+    const response = await seaDataLatestTenService()
+    console.log('后端响应:', response)
+    // axios拦截器已经返回了result.data，所以response直接就是{code, message, data}
+    // response.data才是数据数组
+    if (response && response.data && Array.isArray(response.data)) {
+      seaDataList.value = response.data
+      console.log('获取到的数据:', response.data)
+      updateChartDataFromBackend(response.data)
+      console.log('更新后的时间:', window.seaDataTimes)
+      console.log('更新后的温度数据:', chartDataList[0].data)
+    } else {
+      console.log('响应数据格式不正确:', response)
+      generateMockData(10)
+    }
+  } catch (error) {
+    console.error('获取最新十条数据失败:', error)
+    generateMockData(10)
+  }
+}
+
+// 获取最新一条数据（用于仪表盘显示，不覆盖图表数据）
+const getLatestData = async () => {
+  try {
+    const response = await seaDataLatestService()
+    // axios拦截器已经返回了result.data
+    if (response && response.data) {
+      const data = response.data
+      latestSeaData.value = Array.isArray(data) ? data[0] : data
+      // 如果还没有后端数据，才更新图表
+      if (!window.seaDataTimes || window.seaDataTimes.length === 0) {
+        updateChartDataFromBackend(Array.isArray(data) ? data : [data])
+      }
+    }
+  } catch (error) {
+    console.error('获取最新一条数据失败:', error)
+    if (!window.seaDataTimes || window.seaDataTimes.length === 0) {
+      generateMockData(1)
+    }
+  }
+}
+
+// 从后端数据更新图表数据（温度、盐度、溶解氧、pH值、浊度）
+const updateChartDataFromBackend = (data) => {
+  if (!data || data.length === 0) return
+
+  // 后端返回的数据是按时间倒序排列的（最新的在最前面），需要反转使最新数据显示在最右边
+  const reversedData = [...data].reverse()
+
+  const times = reversedData.map(item => {
+    if (item.sampleTime) {
+      const timeStr = item.sampleTime.toString()
+      if (timeStr.includes('T')) {
+        return timeStr.split('T')[1]?.substring(0, 5) || timeStr
+      }
+      if (timeStr.length >= 16) {
+        return timeStr.substring(11, 16)
+      }
+      return timeStr
+    }
+    return ''
+  }).filter(t => t)
+
+  if (times.length === 0) {
+    const now = new Date()
+    for (let i = reversedData.length - 1; i >= 0; i--) {
+      const time = new Date(now - i * 3600000)
+      times.push(time.getHours().toString().padStart(2, '0') + ':' + time.getMinutes().toString().padStart(2, '0'))
+    }
+  }
+
+  // 映射后端数据到图表：温度、盐度、溶解氧、pH值、浊度
+  chartDataList[0].data = reversedData.map(item => parseFloat(item.temp) || 28)
+  chartDataList[1].data = reversedData.map(item => parseFloat(item.salinity) || 30)
+  chartDataList[2].data = reversedData.map(item => parseFloat(item.o) || 7)
+  chartDataList[3].data = reversedData.map(item => parseFloat(item.ph) || 6.7)
+  chartDataList[4].data = reversedData.map(item => parseFloat(item.turbidity) || 1)
+
+  window.seaDataTimes = times
+}
+
 const generateMockData = (count) => {
   const times = []
   const now = new Date()
@@ -310,7 +398,10 @@ const generateMockData = (count) => {
 
 const initLineCharts = () => {
   const count = 10
-  const times = generateMockData(count)
+  // 优先使用后端数据的时间，否则使用模拟数据
+  const times = window.seaDataTimes && window.seaDataTimes.length > 0 
+    ? window.seaDataTimes 
+    : generateMockData(count)
 
   charts.forEach(chart => chart.dispose())
   charts = []
@@ -384,7 +475,10 @@ const initLineCharts = () => {
 }
 
 const initGaugeCharts = () => {
-  generateMockData(1)
+  // 如果没有后端数据，使用模拟数据
+  if (!latestSeaData.value && !window.seaDataTimes) {
+    generateMockData(1)
+  }
 
   charts.forEach(chart => chart.dispose())
   charts = []
@@ -544,6 +638,10 @@ watch(aiEnabled, (newVal) => {
 onMounted(async () => {
   updateTime()
   timeInterval = setInterval(updateTime, 1000)
+
+  // 获取后端数据（温度、盐度、溶解氧、pH值、浊度）
+  await getLatestTenData()
+  await getLatestData()
 
   await nextTick()
   initCharts()

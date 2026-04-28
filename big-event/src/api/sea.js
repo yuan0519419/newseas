@@ -25,3 +25,13 @@ export const seaDataDeleteService = (id)=>{
 export const seaDataByDateService = (date) => {
     return request.get(`/seaData/otherday?date=${date}`);
 }
+
+//获取最新十条数据用于图表渲染
+export const seaDataLatestTenService = () => {
+    return request.get('/seaData/latestTen');
+}
+
+//获取最新一条数据用于仪表盘
+export const seaDataLatestService = () => {
+    return request.get('/seaData/latest');
+}
