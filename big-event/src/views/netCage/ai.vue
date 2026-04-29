@@ -221,10 +221,10 @@ let timeInterval = null
 
 const chartDataList = [
   { name: '温度', key: 'temp', unit: '°C', color: '#60A5FA', data: [], min: 20, max: 35, optimalMin: 25, optimalMax: 30 },
-  { name: '盐度', key: 'salinity', unit: 'PSU', color: '#34D399', data: [], min: 25, max: 35, optimalMin: 28, optimalMax: 32 },
+  { name: '氨氮', key: 'nh', unit: 'mg/L', color: '#34D399', data: [], min: 0, max: 0.5, optimalMin: 0, optimalMax: 0.2 },
   { name: '溶解氧 (DO)', key: 'do', unit: 'mg/L', color: '#F87171', data: [], min: 5, max: 10, optimalMin: 6.5, optimalMax: 8 },
-  { name: 'pH值', key: 'ph', unit: '', color: '#FBBF24', data: [], min: 6, max: 9, optimalMin: 6.5, optimalMax: 7.5 },
-  { name: '浊度', key: 'turbidity', unit: 'NTU', color: '#A78BFA', data: [], min: 0, max: 5, optimalMin: 0, optimalMax: 2 }
+  { name: 'pH值', key: 'ph', unit: '', color: '#FBBF24', data: [], min: 0, max: 14, optimalMin: 6.5, optimalMax: 8.5 },
+  { name: '浊度', key: 'turbidity', unit: 'NTU', color: '#A78BFA', data: [], min: 0, max: 25, optimalMin: 0, optimalMax: 10 }
 ]
 
 const iconSvgs = [
@@ -315,10 +315,14 @@ const getLatestData = async () => {
 const updateChartDataFromBackend = (data) => {
   if (!data || data.length === 0) return
 
-  // 后端返回的数据是按时间倒序排列的（最新的在最前面），需要反转使最新数据显示在最右边
-  const reversedData = [...data].reverse()
+  // 确保数据按时间正序排列（最早的数据在前，最新的数据在后），使最新数据显示在图表最右边
+  const sortedData = [...data].sort((a, b) => {
+    const timeA = a.sampleTime ? new Date(a.sampleTime) : new Date(0)
+    const timeB = b.sampleTime ? new Date(b.sampleTime) : new Date(0)
+    return timeA - timeB
+  })
 
-  const times = reversedData.map(item => {
+  const times = sortedData.map(item => {
     if (item.sampleTime) {
       const timeStr = item.sampleTime.toString()
       if (timeStr.includes('T')) {
@@ -340,12 +344,12 @@ const updateChartDataFromBackend = (data) => {
     }
   }
 
-  // 映射后端数据到图表：温度、盐度、溶解氧、pH值、浊度
-  chartDataList[0].data = reversedData.map(item => parseFloat(item.temp) || 28)
-  chartDataList[1].data = reversedData.map(item => parseFloat(item.salinity) || 30)
-  chartDataList[2].data = reversedData.map(item => parseFloat(item.o) || 7)
-  chartDataList[3].data = reversedData.map(item => parseFloat(item.ph) || 6.7)
-  chartDataList[4].data = reversedData.map(item => parseFloat(item.turbidity) || 1)
+  // 映射后端数据到图表：温度、氨氮、溶解氧、pH值、浊度
+  chartDataList[0].data = sortedData.map(item => parseFloat(item.temp) || 28)
+  chartDataList[1].data = sortedData.map(item => parseFloat(item.nh) || 0.1)
+  chartDataList[2].data = sortedData.map(item => parseFloat(item.o) || 7)
+  chartDataList[3].data = sortedData.map(item => parseFloat(item.ph) || 6.7)
+  chartDataList[4].data = sortedData.map(item => parseFloat(item.turbidity) || 1)
 
   window.seaDataTimes = times
 }
@@ -419,7 +423,11 @@ const initLineCharts = () => {
         trigger: 'axis',
         backgroundColor: 'rgba(15, 23, 42, 0.9)',
         borderColor: 'rgba(59, 130, 246, 0.3)',
-        textStyle: { color: '#93C5FD' }
+        textStyle: { color: '#93C5FD' },
+        formatter: (params) => {
+          const param = params[0]
+          return `${param.name}<br/>${param.marker} ${param.value}${item.unit || ''}`
+        }
       },
       grid: {
         left: '10%',
@@ -440,12 +448,39 @@ const initLineCharts = () => {
       },
       yAxis: {
         type: 'value',
+        min: item.min,
+        max: item.max,
+        name: item.unit || '',
+        nameTextStyle: {
+          color: '#93C5FD',
+          fontSize: 10,
+          padding: [0, 40, 0, 0]
+        },
         axisLine: { show: true, lineStyle: { color: 'rgba(59, 130, 246, 0.3)' } },
         axisLabel: { 
           color: '#93C5FD', 
           fontSize: 9,
-          formatter: '{value}' + (item.unit || '')
+          formatter: (value) => {
+            // 根据数据类型设置不同精度
+            const key = item.key
+            if (key === 'nh') {
+              // 氨氮：保留3位小数
+              return value.toFixed(3)
+            } else if (key === 'temp' || key === 'o') {
+              // 温度、溶解氧：保留1位小数
+              return value.toFixed(1)
+            } else if (key === 'turbidity') {
+              // 浊度：保留1位小数
+              return value.toFixed(1)
+            } else if (key === 'ph') {
+              // pH值：保留1位小数
+              return value.toFixed(1)
+            }
+            return value.toString()
+          },
+          margin: 10
         },
+        axisTick: { show: true },
         splitLine: { lineStyle: { color: 'rgba(59, 130, 246, 0.1)' } }
       },
       series: [{
