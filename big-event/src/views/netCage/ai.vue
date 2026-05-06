@@ -103,10 +103,10 @@
                 <span class="status-dot"></span>良好
               </span>
               <span class="status-item warning" :class="{ active: decisionStatus === 'warning' }">
-                <span class="status-dot"></span>预警
+                <span class="status-dot"></span>警告
               </span>
               <span class="status-item danger" :class="{ active: decisionStatus === 'danger' }">
-                <span class="status-dot"></span>异常
+                <span class="status-dot"></span>危险
               </span>
             </div>
             <el-switch
@@ -119,64 +119,47 @@
           </div>
 
           <div v-if="aiEnabled" class="decision-content">
-            <div class="decision-section">
-              <div class="section-header">
-                <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="#67e8f9" stroke-width="2">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                  <polyline points="14,2 14,8 20,8"/>
-                  <line x1="16" y1="13" x2="8" y2="13"/>
-                  <line x1="16" y1="17" x2="8" y2="17"/>
-                  <polyline points="10,9 9,9 8,9"/>
-                </svg>
-                <h4>大模型建议：</h4>
-              </div>
-              <p>{{ aiSuggestion.mainAdvice }}</p>
+            <!-- 加载状态 -->
+            <div v-if="isLoading" class="loading-container">
+              <div class="loading-spinner"></div>
+              <p class="loading-text">AI正在分析水质数据...</p>
             </div>
-
-            <div class="decision-section">
-              <div class="section-header">
-                <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="#67e8f9" stroke-width="2">
-                  <line x1="18" y1="20" x2="18" y2="10"/>
-                  <line x1="12" y1="20" x2="12" y2="4"/>
-                  <line x1="6" y1="20" x2="6" y2="14"/>
-                </svg>
-                <h4>分析摘要：</h4>
+            
+            <!-- 数据内容 -->
+            <template v-else>
+              <!-- 图标标签栏 -->
+              <div class="tabs-bar">
+                <button
+                  v-for="item in tabItems"
+                  :key="item.key"
+                  class="tab-btn"
+                  :class="{ active: activeTab === item.key, disabled: !aiSuggestion[item.key] }"
+                  @click="activeTab = item.key"
+                  :title="item.label"
+                >
+                  <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path :d="item.icon"/>
+                  </svg>
+                  <span class="tab-label">{{ item.label }}</span>
+                </button>
               </div>
-              <p>{{ aiSuggestion.analysisSummary }}</p>
-            </div>
-
-            <div class="decision-section">
-              <div class="section-header">
-                <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="#67e8f9" stroke-width="2">
-                  <circle cx="12" cy="12" r="3"/>
-                  <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
-                </svg>
-                <h4>操作建议：</h4>
+              
+              <!-- 内容展示区 -->
+              <div class="content-area">
+                <div v-if="aiSuggestion[activeTab]" class="content-panel">
+                  <div class="content-header">
+                    <svg class="content-icon" viewBox="0 0 24 24" fill="none" stroke="#67e8f9" stroke-width="2">
+                      <path :d="tabItems.find(t => t.key === activeTab)?.icon"/>
+                    </svg>
+                    <h4>{{ tabItems.find(t => t.key === activeTab)?.label }}：</h4>
+                  </div>
+                  <p class="content-text">{{ aiSuggestion[activeTab] }}</p>
+                </div>
+                <div v-else class="empty-content">
+                  <p>暂无{{ tabItems.find(t => t.key === activeTab)?.label }}数据</p>
+                </div>
               </div>
-              <p>{{ aiSuggestion.operationAdvice }}</p>
-            </div>
-
-            <div class="decision-section">
-              <div class="section-header">
-                <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="#67e8f9" stroke-width="2">
-                  <circle cx="12" cy="12" r="10"/>
-                  <polyline points="12,6 12,12 16,14"/>
-                </svg>
-                <h4>未来12小时预警：</h4>
-              </div>
-              <p>{{ aiSuggestion.futureWarning }}</p>
-            </div>
-
-            <div class="decision-section">
-              <div class="section-header">
-                <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="#67e8f9" stroke-width="2">
-                  <circle cx="11" cy="11" r="8"/>
-                  <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-                </svg>
-                <h4>依据：</h4>
-              </div>
-              <p>{{ aiSuggestion.basis }}</p>
-            </div>
+            </template>
           </div>
 
           <div v-else class="decision-disabled">
@@ -202,12 +185,12 @@
 import { ref, onMounted, onUnmounted, nextTick, watch } from 'vue'
 import * as echarts from 'echarts'
 import oceanVideoUrl from '@/assets/ocean-video.mp4'
-import { seaDataLatestTenService, seaDataLatestService } from '@/api/sea.js'
+import { seaDataLatestTenService, seaDataLatestService, aiSuggestionService } from '@/api/sea.js'
 
 const dataRange = ref('recent10')
 const isRecording = ref(false)
 const videoStatus = ref('loading')
-const aiEnabled = ref(true)
+const aiEnabled = ref(false)
 const decisionStatus = ref('good')
 const currentTime = ref('')
 const videoPlayer = ref(null)
@@ -240,12 +223,23 @@ const getIconSvg = (index) => {
 }
 
 const aiSuggestion = ref({
-  mainAdvice: '基于水质数据和鱼群监测，当前状态良好。',
-  analysisSummary: 'DO和pH处于最佳水平，鱼群活动正常',
-  operationAdvice: '维持当前投喂计划和运维',
-  futureWarning: 'pH值有轻微上升趋势，建议加强监测',
-  basis: 'DO最佳，pH良好，视频无异常'
+  mainAdvice: '',
+  analysisSummary: '',
+  operationAdvice: '',
+  futureWarning: '',
+  basis: ''
 })
+
+const isLoading = ref(false)
+const activeTab = ref('mainAdvice')
+
+const tabItems = [
+  { key: 'mainAdvice', label: '大模型建议', icon: 'M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z M14 2 14 8 20 8 M16 13 8 13 M16 17 8 17 M10 9 9 9 8 9' },
+  { key: 'analysisSummary', label: '分析摘要', icon: 'M18 20 18 10 M12 20 12 4 M6 20 6 14' },
+  { key: 'operationAdvice', label: '操作建议', icon: 'M12 12a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm9.4 3a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z' },
+  { key: 'futureWarning', label: '未来预警', icon: 'M12 12a10 10 0 1 0 0-20 10 10 0 0 0 0 20zm0 2-4 4 4 2' },
+  { key: 'basis', label: '依据', icon: 'M11 11a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm10 10-4.35-4.35' }
+]
 
 const getStatusText = (value, index) => {
   const item = chartDataList[index]
@@ -308,6 +302,45 @@ const getLatestData = async () => {
     if (!window.seaDataTimes || window.seaDataTimes.length === 0) {
       generateMockData(1)
     }
+  }
+}
+
+// 获取AI研判建议数据
+const getAiSuggestion = async () => {
+  // 设置加载状态
+  isLoading.value = true
+  
+  try {
+    const response = await aiSuggestionService()
+    // axios拦截器已经返回了result.data
+    if (response && response.data) {
+      const data = response.data
+      // 更新AI建议数据
+      aiSuggestion.value = {
+        mainAdvice: data.mainAdvice || '',
+        analysisSummary: data.analysisSummary || '',
+        operationAdvice: data.operationAdvice || '',
+        futureWarning: data.futureWarning || '',
+        basis: data.basis || ''
+      }
+      // 更新决策状态
+      if (data.status) {
+        decisionStatus.value = data.status
+      }
+    }
+  } catch (error) {
+    console.error('获取AI研判建议失败:', error)
+    // 请求失败时显示默认提示
+    aiSuggestion.value = {
+      mainAdvice: '获取AI研判建议失败，请稍后重试。',
+      analysisSummary: '',
+      operationAdvice: '',
+      futureWarning: '',
+      basis: ''
+    }
+  } finally {
+    // 结束加载状态
+    isLoading.value = false
   }
 }
 
@@ -661,12 +694,12 @@ const initVideo = async () => {
   }
 }
 
-watch(aiEnabled, (newVal) => {
+watch(aiEnabled, async (newVal) => {
   if (!newVal) {
     decisionStatus.value = ''
   } else {
-    const statuses = ['good', 'warning', 'danger']
-    decisionStatus.value = statuses[Math.floor(Math.random() * 3)]
+    // 开启时从后端获取AI研判建议
+    await getAiSuggestion()
   }
 })
 
@@ -677,6 +710,11 @@ onMounted(async () => {
   // 获取后端数据（温度、盐度、溶解氧、pH值、浊度）
   await getLatestTenData()
   await getLatestData()
+  
+  // AI研判建议数据只在开启时请求
+  if (aiEnabled.value) {
+    await getAiSuggestion()
+  }
 
   await nextTick()
   initCharts()
@@ -915,6 +953,7 @@ const handleResize = () => {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  height: calc(100vh - 180px);
 }
 
 .video-panel {
@@ -1084,6 +1123,9 @@ const handleResize = () => {
   border-radius: var(--radius-lg);
   overflow: hidden;
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
   transition: all 0.3s ease;
 
   &.disabled {
@@ -1163,8 +1205,41 @@ const handleResize = () => {
 
   .decision-content {
     padding: 16px;
-    max-height: 300px;
+    flex: 1;
     overflow-y: auto;
+    box-sizing: border-box;
+    min-height: 0;
+    padding-right: 22px;
+
+    .loading-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      min-height: 200px;
+    }
+
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(59, 130, 246, 0.2);
+      border-top-color: #06b6d4;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    .loading-text {
+      margin-top: 16px;
+      color: #93c5fd;
+      font-size: 14px;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
 
     &::-webkit-scrollbar {
       width: 6px;
@@ -1179,43 +1254,117 @@ const handleResize = () => {
       border-radius: 3px;
     }
 
-    .decision-section {
-      margin-bottom: 16px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+    &::-webkit-scrollbar-thumb:hover {
+      background: rgba(59, 130, 246, 0.6);
+    }
 
-      &:last-child {
-        border-bottom: none;
-        margin-bottom: 0;
+    .tabs-bar {
+      display: flex;
+      justify-content: space-between;
+      gap: 6px;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(59, 130, 246, 0.15);
+    }
+
+    .tab-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      padding: 8px 6px;
+      background: rgba(10, 14, 26, 0.6);
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      border-radius: 6px;
+      color: #93c5fd;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      flex: 1;
+      min-width: 50px;
+      max-width: 70px;
+
+      &:hover:not(.disabled) {
+        background: rgba(59, 130, 246, 0.2);
+        border-color: rgba(59, 130, 246, 0.4);
+        transform: translateY(-1px);
       }
 
-      .section-header {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        margin-bottom: 8px;
-
-        .section-icon {
-          width: 18px;
-          height: 18px;
-          flex-shrink: 0;
-        }
-
-        h4 {
-          color: #67e8f9;
-          font-size: 13px;
-          font-weight: 600;
-          margin: 0;
-        }
+      &.active {
+        background: rgba(6, 182, 212, 0.2);
+        border-color: #06b6d4;
+        color: #06b6d4;
+        box-shadow: 0 0 8px rgba(6, 182, 212, 0.3);
       }
 
-      p {
-        color: #93c5fd;
-        font-size: 13px;
-        line-height: 1.6;
+      &.disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+
+      .tab-icon {
+        width: 16px;
+        height: 16px;
+      }
+
+      .tab-label {
+        font-size: 10px;
+        font-weight: 500;
+        text-align: center;
+      }
+    }
+
+    .content-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .content-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .content-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+
+      .content-icon {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+      }
+
+      h4 {
+        color: #67e8f9;
+        font-size: 14px;
+        font-weight: 600;
         margin: 0;
-        padding-left: 26px;
       }
+    }
+
+    .content-text {
+      color: #93c5fd;
+      font-size: 13px;
+      line-height: 1.7;
+      margin: 0;
+      padding: 12px 14px;
+      background: rgba(10, 14, 26, 0.5);
+      border-radius: 8px;
+      border: 1px solid rgba(59, 130, 246, 0.1);
+      flex: 1;
+    }
+
+    .empty-content {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #6b7280;
+      font-size: 13px;
     }
   }
 

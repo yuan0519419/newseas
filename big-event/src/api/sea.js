@@ -35,3 +35,8 @@ export const seaDataLatestTenService = () => {
 export const seaDataLatestService = () => {
     return request.get('/seaData/latest');
 }
+
+//获取AI研判建议数据
+export const aiSuggestionService = () => {
+    return request.get('/ai/suggestion');
+}
