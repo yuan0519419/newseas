@@ -1,10 +1,10 @@
 <template>
   <div class="ai-decision-container">
     <div class="header">
-      <h1>关键因子多协同研判</h1>
+      <h1>关键因子协同研判</h1>
       <div class="header-actions">
         <el-button type="primary" size="small" @click="toggleDataRange">
-          {{ dataRange === 'recent10' ? '近10条数据' : '最新1条数据' }}
+          {{ dataRange === 'recent10' ? '最新数据' : '变化趋势' }}
         </el-button>
       </div>
     </div>
@@ -15,19 +15,19 @@
         <div v-if="dataRange === 'recent10'" class="charts-grid-line">
           <div v-for="(item, index) in chartDataList" :key="index" class="chart-item">
             <div :id="'chart-' + index" class="chart-box-small"></div>
-            <div class="chart-title" :style="{ color: item.color }">{{ item.name }}</div>
+            <div class="chart-title" style="color: #34D399">{{ item.name }}</div>
           </div>
         </div>
         <div v-else class="charts-grid-gauge">
-          <div v-for="(item, index) in chartDataList" :key="index" class="gauge-card" :style="{ borderColor: item.color + '40' }">
-            <div class="gauge-icon" v-html="getIconSvg(index)"></div>
-            <div class="gauge-title" :style="{ color: item.color }">{{ item.name }}</div>
+          <div v-for="(item, index) in chartDataList" :key="index" class="gauge-card" :style="{ borderColor: getStatusColor(item.data[item.data.length - 1] || item.data[0], index) + '40' }">
+            <div class="gauge-icon" v-html="getIconSvg(index)" :style="{ color: getStatusColor(item.data[item.data.length - 1] || item.data[0], index) }"></div>
+            <div class="gauge-title" :style="{ color: getStatusColor(item.data[item.data.length - 1] || item.data[0], index) }">{{ item.name }}</div>
             <div :id="'gauge-' + index" class="gauge-chart"></div>
-            <div class="gauge-value" :style="{ color: item.color }">
-              {{ item.data[0] }}{{ item.unit }}
+            <div class="gauge-value" :style="{ color: getStatusColor(item.data[item.data.length - 1] || item.data[0], index) }">
+              {{ item.data[item.data.length - 1] || item.data[0] }}{{ item.unit }}
             </div>
-            <div class="gauge-status" :class="getStatusClass(item.data[0], index)">
-              {{ getStatusText(item.data[0], index) }}
+            <div class="gauge-status" :class="getStatusClass(item.data[item.data.length - 1] || item.data[0], index)">
+              {{ getStatusText(item.data[item.data.length - 1] || item.data[0], index) }}
             </div>
           </div>
         </div>
@@ -184,7 +184,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted, nextTick, watch } from 'vue'
 import * as echarts from 'echarts'
-import oceanVideoUrl from '@/assets/ocean-video.mp4'
+import oceanVideoUrl from '@/assets/ai决策用.mp4'
 import { seaDataLatestTenService, seaDataLatestService, aiSuggestionService } from '@/api/sea.js'
 
 const dataRange = ref('recent10')
@@ -203,11 +203,11 @@ let charts = []
 let timeInterval = null
 
 const chartDataList = [
-  { name: '温度', key: 'temp', unit: '°C', color: '#60A5FA', data: [], min: 20, max: 35, optimalMin: 25, optimalMax: 30 },
-  { name: '氨氮', key: 'nh', unit: 'mg/L', color: '#34D399', data: [], min: 0, max: 0.5, optimalMin: 0, optimalMax: 0.2 },
-  { name: '溶解氧 (DO)', key: 'do', unit: 'mg/L', color: '#F87171', data: [], min: 5, max: 10, optimalMin: 6.5, optimalMax: 8 },
-  { name: 'pH值', key: 'ph', unit: '', color: '#FBBF24', data: [], min: 0, max: 14, optimalMin: 6.5, optimalMax: 8.5 },
-  { name: '浊度', key: 'turbidity', unit: 'NTU', color: '#A78BFA', data: [], min: 0, max: 25, optimalMin: 0, optimalMax: 10 }
+  { name: '温度', key: 'temp', unit: '°C', color: '#34D399', data: [], min: 24, max: 31, optimalMin: 25, optimalMax: 30, displayMin: 15, displayMax: 35 },
+  { name: '氨氮', key: 'nh', unit: 'mg/L', color: '#34D399', data: [], min: 0, max: 0.22, optimalMin: 0, optimalMax: 0.2, displayMin: 0, displayMax: 0.5 },
+  { name: '溶解氧 (DO)', key: 'do', unit: 'mg/L', color: '#34D399', data: [], min: 5.85, max: 8.8, optimalMin: 6.5, optimalMax: 8, displayMin: 0, displayMax: 12 },
+  { name: 'pH值', key: 'ph', unit: '', color: '#34D399', data: [], min: 6.5, max: 9.0, optimalMin: 7.5, optimalMax: 8.5, displayMin: 0, displayMax: 14 },
+  { name: '浊度', key: 'turbidity', unit: 'NTU', color: '#34D399', data: [], min: 0, max: 11, optimalMin: 0, optimalMax: 10, displayMin: 0, displayMax: 25 }
 ]
 
 const iconSvgs = [
@@ -259,6 +259,13 @@ const getStatusClass = (value, index) => {
   if (status === '正常') return 'status-good'
   if (status === '异常') return 'status-danger'
   return 'status-warning'
+}
+
+const getStatusColor = (value, index) => {
+  const status = getStatusText(value, index)
+  if (status === '正常') return '#34D399'
+  if (status === '异常') return '#F87171'
+  return '#FBBF24'
 }
 
 // 获取最新十条数据
@@ -481,8 +488,8 @@ const initLineCharts = () => {
       },
       yAxis: {
         type: 'value',
-        min: item.min,
-        max: item.max,
+        min: item.displayMin,
+        max: item.displayMax,
         name: item.unit || '',
         nameTextStyle: {
           color: '#93C5FD',
@@ -520,16 +527,28 @@ const initLineCharts = () => {
         type: 'line',
         smooth: true,
         data: item.data,
-        lineStyle: { width: 2, color: item.color },
+        lineStyle: { width: 2, color: '#34D399' },
         itemStyle: { 
-          color: item.color,
+          color: function(params) {
+            const value = params.value
+            // 根据阈值判断颜色
+            // 危险范围：超出最大/最小值边界
+            if (value < item.min || value > item.max) {
+              return '#f87171' // 红色：严重超标
+            }
+            // 预警范围：超出最优范围但未超出危险范围
+            else if (value < item.optimalMin || value > item.optimalMax) {
+              return '#fbbf24' // 黄色：偏高或偏低
+            }
+            return '#34D399' // 绿色：正常
+          },
           borderWidth: 2,
           borderColor: '#fff'
         },
         areaStyle: {
           color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-            { offset: 0, color: item.color + '40' },
-            { offset: 1, color: item.color + '05' }
+            { offset: 0, color: '#34D39940' },
+            { offset: 1, color: '#34D39905' }
           ])
         },
         symbol: 'circle',
@@ -558,14 +577,17 @@ const initGaugeCharts = () => {
     const chart = echarts.init(dom)
     charts.push(chart)
 
-    const currentValue = parseFloat(item.data[0])
+    // 读取最新的数据（数组最后一个元素）
+    const currentValue = parseFloat(item.data[item.data.length - 1] || item.data[0])
     
     let gaugeColor = '#34d399'
-    if (currentValue < item.optimalMin || currentValue > item.optimalMax) {
-      gaugeColor = '#fbbf24'
-    }
-    if (currentValue < item.min * 1.05 || currentValue > item.max * 0.95) {
+    // 危险范围：超出最大/最小值边界
+    if (currentValue < item.min || currentValue > item.max) {
       gaugeColor = '#f87171'
+    }
+    // 预警范围：超出最优范围但未超出危险范围
+    else if (currentValue < item.optimalMin || currentValue > item.optimalMax) {
+      gaugeColor = '#fbbf24'
     }
 
     const option = {
@@ -588,8 +610,8 @@ const initGaugeCharts = () => {
           roundCap: true,
           itemStyle: {
             color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
-              { offset: 0, color: item.color + '80' },
-              { offset: 1, color: item.color }
+              { offset: 0, color: gaugeColor + '80' },
+              { offset: 1, color: gaugeColor }
             ])
           }
         },
@@ -784,9 +806,9 @@ const handleResize = () => {
 
   .main-grid {
     display: grid;
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: 3fr 2fr;
     gap: 20px;
-    min-height: calc(100vh - 250px);
+    min-height: calc(100vh - 200px);
   }
 }
 
@@ -880,11 +902,12 @@ const handleResize = () => {
         width: 40px;
         height: 40px;
         margin-bottom: 8px;
+        color: #93C5FD;
         
         svg {
           width: 100%;
           height: 100%;
-          color: #93C5FD;
+          color: inherit;
           filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
           transition: all 0.3s ease;
         }
@@ -953,7 +976,7 @@ const handleResize = () => {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  height: calc(100vh - 180px);
+  height: calc(100vh - 160px);
 }
 
 .video-panel {
@@ -1156,10 +1179,11 @@ const handleResize = () => {
       }
 
       h3 {
-        color: #67e8f9;
-        font-size: 15px;
+        color: #a5f3fc;
+        font-size: 18px;
         font-weight: 600;
         margin: 0;
+        text-shadow: 0 0 10px rgba(103, 232, 249, 0.5);
       }
     }
 
@@ -1170,9 +1194,9 @@ const handleResize = () => {
       .status-item {
         display: flex;
         align-items: center;
-        gap: 6px;
-        font-size: 12px;
-        color: #9ca3af;
+        gap: 8px;
+        font-size: 14px;
+        color: #67e8f9;
         transition: all 0.3s ease;
         opacity: 0.5;
 
@@ -1307,9 +1331,10 @@ const handleResize = () => {
       }
 
       .tab-label {
-        font-size: 10px;
+        font-size: 12px;
         font-weight: 500;
         text-align: center;
+        color: #67e8f9;
       }
     }
 
@@ -1339,19 +1364,20 @@ const handleResize = () => {
       }
 
       h4 {
-        color: #67e8f9;
-        font-size: 14px;
+        color: #a5f3fc;
+        font-size: 16px;
         font-weight: 600;
         margin: 0;
+        text-shadow: 0 0 8px rgba(103, 232, 249, 0.4);
       }
     }
 
     .content-text {
-      color: #93c5fd;
-      font-size: 13px;
-      line-height: 1.7;
+      color: #67e8f9;
+      font-size: 15px;
+      line-height: 1.8;
       margin: 0;
-      padding: 12px 14px;
+      padding: 14px 16px;
       background: rgba(10, 14, 26, 0.5);
       border-radius: 8px;
       border: 1px solid rgba(59, 130, 246, 0.1);

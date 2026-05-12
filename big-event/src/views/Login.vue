@@ -101,7 +101,7 @@
     <!-- 页面底部技术支持信息 -->
     <div class="page-footer">
       <div class="tech-support">
-        <p>广东海洋大学 · 海洋科学与技术学院</p>
+        <p>广东海洋大学</p>
         <p class="version">Tech Vision System v2.0</p>
       </div>
     </div>

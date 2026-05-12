@@ -479,14 +479,17 @@ const deleteReserve = (row) => {
 // 按钮样式优化
 :deep(.el-button) {
   &.el-button--primary {
-    background: var(--gradient-primary);
-    border-color: transparent;
-    color: var(--tech-blue-900);
+    background: linear-gradient(135deg, #22d3ee 0%, #06b6d4 100%);
+    border: 1px solid rgba(6, 182, 212, 0.5);
+    color: #0e4a55;
     font-weight: 600;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(6, 182, 212, 0.4);
     
     &:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--glow-md);
+      background: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%);
+      border-color: rgba(6, 182, 212, 0.8);
+      box-shadow: 0 0 20px rgba(6, 182, 212, 0.6);
     }
   }
   
