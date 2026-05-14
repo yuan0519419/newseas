@@ -174,10 +174,6 @@
       </div>
     </div>
 
-    <div class="footer-info">
-      <span>广东海洋大学 - 海大识鱼团队</span>
-      <span>Tech Vision System v2.0</span>
-    </div>
   </div>
 </template>
 
@@ -1420,17 +1416,6 @@ const handleResize = () => {
       }
     }
   }
-}
-
-.footer-info {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 20px;
-  margin-top: 20px;
-  border-top: 1px solid rgba(59, 130, 246, 0.2);
-  color: #6b7280;
-  font-size: 12px;
 }
 
 @keyframes pulse-recording {
