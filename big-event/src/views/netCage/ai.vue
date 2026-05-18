@@ -1,10 +1,10 @@
 <template>
   <div class="ai-decision-container">
     <div class="header">
-      <h1>关键因子多协同研判</h1>
+      <h1>关键因子协同研判</h1>
       <div class="header-actions">
-        <el-button :type="dataRange === 'recent10' ? 'primary' : 'info'" size="small" @click="toggleDataRange">
-          {{ dataRange === 'recent10' ? '近10条数据' : '最新1条数据' }}
+        <el-button type="primary" size="small" @click="toggleDataRange">
+          {{ dataRange === 'recent10' ? '最新数据' : '变化趋势' }}
         </el-button>
       </div>
     </div>
@@ -15,19 +15,19 @@
         <div v-if="dataRange === 'recent10'" class="charts-grid-line">
           <div v-for="(item, index) in chartDataList" :key="index" class="chart-item">
             <div :id="'chart-' + index" class="chart-box-small"></div>
-            <div class="chart-title" :style="{ color: item.color }">{{ item.name }}</div>
+            <div class="chart-title" style="color: #34D399">{{ item.name }}</div>
           </div>
         </div>
         <div v-else class="charts-grid-gauge">
-          <div v-for="(item, index) in chartDataList" :key="index" class="gauge-card" :style="{ borderColor: item.color + '40' }">
-            <div class="gauge-icon" v-html="getIconSvg(index)"></div>
-            <div class="gauge-title" :style="{ color: item.color }">{{ item.name }}</div>
+          <div v-for="(item, index) in chartDataList" :key="index" class="gauge-card" :style="{ borderColor: getStatusColor(item.data[item.data.length - 1] || item.data[0], index) + '40' }">
+            <div class="gauge-icon" v-html="getIconSvg(index)" :style="{ color: getStatusColor(item.data[item.data.length - 1] || item.data[0], index) }"></div>
+            <div class="gauge-title" :style="{ color: getStatusColor(item.data[item.data.length - 1] || item.data[0], index) }">{{ item.name }}</div>
             <div :id="'gauge-' + index" class="gauge-chart"></div>
-            <div class="gauge-value" :style="{ color: item.color }">
-              {{ item.data[0] }}{{ item.unit }}
+            <div class="gauge-value" :style="{ color: getStatusColor(item.data[item.data.length - 1] || item.data[0], index) }">
+              {{ item.data[item.data.length - 1] || item.data[0] }}{{ item.unit }}
             </div>
-            <div class="gauge-status" :class="getStatusClass(item.data[0], index)">
-              {{ getStatusText(item.data[0], index) }}
+            <div class="gauge-status" :class="getStatusClass(item.data[item.data.length - 1] || item.data[0], index)">
+              {{ getStatusText(item.data[item.data.length - 1] || item.data[0], index) }}
             </div>
           </div>
         </div>
@@ -103,10 +103,10 @@
                 <span class="status-dot"></span>良好
               </span>
               <span class="status-item warning" :class="{ active: decisionStatus === 'warning' }">
-                <span class="status-dot"></span>预警
+                <span class="status-dot"></span>警告
               </span>
               <span class="status-item danger" :class="{ active: decisionStatus === 'danger' }">
-                <span class="status-dot"></span>异常
+                <span class="status-dot"></span>危险
               </span>
             </div>
             <el-switch
@@ -119,64 +119,47 @@
           </div>
 
           <div v-if="aiEnabled" class="decision-content">
-            <div class="decision-section">
-              <div class="section-header">
-                <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="#67e8f9" stroke-width="2">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                  <polyline points="14,2 14,8 20,8"/>
-                  <line x1="16" y1="13" x2="8" y2="13"/>
-                  <line x1="16" y1="17" x2="8" y2="17"/>
-                  <polyline points="10,9 9,9 8,9"/>
-                </svg>
-                <h4>大模型建议：</h4>
-              </div>
-              <p>{{ aiSuggestion.mainAdvice }}</p>
+            <!-- 加载状态 -->
+            <div v-if="isLoading" class="loading-container">
+              <div class="loading-spinner"></div>
+              <p class="loading-text">AI正在分析水质数据...</p>
             </div>
-
-            <div class="decision-section">
-              <div class="section-header">
-                <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="#67e8f9" stroke-width="2">
-                  <line x1="18" y1="20" x2="18" y2="10"/>
-                  <line x1="12" y1="20" x2="12" y2="4"/>
-                  <line x1="6" y1="20" x2="6" y2="14"/>
-                </svg>
-                <h4>分析摘要：</h4>
+            
+            <!-- 数据内容 -->
+            <template v-else>
+              <!-- 图标标签栏 -->
+              <div class="tabs-bar">
+                <button
+                  v-for="item in tabItems"
+                  :key="item.key"
+                  class="tab-btn"
+                  :class="{ active: activeTab === item.key, disabled: !aiSuggestion[item.key] }"
+                  @click="activeTab = item.key"
+                  :title="item.label"
+                >
+                  <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path :d="item.icon"/>
+                  </svg>
+                  <span class="tab-label">{{ item.label }}</span>
+                </button>
               </div>
-              <p>{{ aiSuggestion.analysisSummary }}</p>
-            </div>
-
-            <div class="decision-section">
-              <div class="section-header">
-                <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="#67e8f9" stroke-width="2">
-                  <circle cx="12" cy="12" r="3"/>
-                  <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
-                </svg>
-                <h4>操作建议：</h4>
+              
+              <!-- 内容展示区 -->
+              <div class="content-area">
+                <div v-if="aiSuggestion[activeTab]" class="content-panel">
+                  <div class="content-header">
+                    <svg class="content-icon" viewBox="0 0 24 24" fill="none" stroke="#67e8f9" stroke-width="2">
+                      <path :d="tabItems.find(t => t.key === activeTab)?.icon"/>
+                    </svg>
+                    <h4>{{ tabItems.find(t => t.key === activeTab)?.label }}：</h4>
+                  </div>
+                  <p class="content-text">{{ aiSuggestion[activeTab] }}</p>
+                </div>
+                <div v-else class="empty-content">
+                  <p>暂无{{ tabItems.find(t => t.key === activeTab)?.label }}数据</p>
+                </div>
               </div>
-              <p>{{ aiSuggestion.operationAdvice }}</p>
-            </div>
-
-            <div class="decision-section">
-              <div class="section-header">
-                <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="#67e8f9" stroke-width="2">
-                  <circle cx="12" cy="12" r="10"/>
-                  <polyline points="12,6 12,12 16,14"/>
-                </svg>
-                <h4>未来12小时预警：</h4>
-              </div>
-              <p>{{ aiSuggestion.futureWarning }}</p>
-            </div>
-
-            <div class="decision-section">
-              <div class="section-header">
-                <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="#67e8f9" stroke-width="2">
-                  <circle cx="11" cy="11" r="8"/>
-                  <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-                </svg>
-                <h4>依据：</h4>
-              </div>
-              <p>{{ aiSuggestion.basis }}</p>
-            </div>
+            </template>
           </div>
 
           <div v-else class="decision-disabled">
@@ -191,35 +174,36 @@
       </div>
     </div>
 
-    <div class="footer-info">
-      <span>广东海洋大学 - 海大识鱼团队</span>
-      <span>Tech Vision System v2.0</span>
-    </div>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted, onUnmounted, nextTick, watch } from 'vue'
 import * as echarts from 'echarts'
-import oceanVideoUrl from '@/assets/ocean-video.mp4'
+import oceanVideoUrl from '@/assets/ai决策用.mp4'
+import { seaDataLatestTenService, seaDataLatestService, aiSuggestionService } from '@/api/sea.js'
 
 const dataRange = ref('recent10')
 const isRecording = ref(false)
 const videoStatus = ref('loading')
-const aiEnabled = ref(true)
+const aiEnabled = ref(false)
 const decisionStatus = ref('good')
 const currentTime = ref('')
 const videoPlayer = ref(null)
+
+// 后端数据
+const seaDataList = ref([]) // 最新十条数据
+const latestSeaData = ref(null) // 最新一条数据
 
 let charts = []
 let timeInterval = null
 
 const chartDataList = [
-  { name: '温度', key: 'temp', unit: '°C', color: '#60A5FA', data: [], min: 20, max: 35, optimalMin: 25, optimalMax: 30 },
-  { name: '盐度', key: 'salinity', unit: 'PSU', color: '#34D399', data: [], min: 25, max: 35, optimalMin: 28, optimalMax: 32 },
-  { name: '溶解氧 (DO)', key: 'do', unit: 'mg/L', color: '#F87171', data: [], min: 5, max: 10, optimalMin: 6.5, optimalMax: 8 },
-  { name: 'pH值', key: 'ph', unit: '', color: '#FBBF24', data: [], min: 6, max: 9, optimalMin: 6.5, optimalMax: 7.5 },
-  { name: '浊度', key: 'turbidity', unit: 'NTU', color: '#A78BFA', data: [], min: 0, max: 5, optimalMin: 0, optimalMax: 2 }
+  { name: '温度', key: 'temp', unit: '°C', color: '#34D399', data: [], min: 24, max: 31, optimalMin: 25, optimalMax: 30, displayMin: 15, displayMax: 35 },
+  { name: '氨氮', key: 'nh', unit: 'mg/L', color: '#34D399', data: [], min: 0, max: 0.22, optimalMin: 0, optimalMax: 0.2, displayMin: 0, displayMax: 0.5 },
+  { name: '溶解氧 (DO)', key: 'do', unit: 'mg/L', color: '#34D399', data: [], min: 5.85, max: 8.8, optimalMin: 6.5, optimalMax: 8, displayMin: 0, displayMax: 12 },
+  { name: 'pH值', key: 'ph', unit: '', color: '#34D399', data: [], min: 6.5, max: 9.0, optimalMin: 7.5, optimalMax: 8.5, displayMin: 0, displayMax: 14 },
+  { name: '浊度', key: 'turbidity', unit: 'NTU', color: '#34D399', data: [], min: 0, max: 11, optimalMin: 0, optimalMax: 10, displayMin: 0, displayMax: 25 }
 ]
 
 const iconSvgs = [
@@ -235,12 +219,23 @@ const getIconSvg = (index) => {
 }
 
 const aiSuggestion = ref({
-  mainAdvice: '基于水质数据和鱼群监测，当前状态良好。',
-  analysisSummary: 'DO和pH处于最佳水平，鱼群活动正常',
-  operationAdvice: '维持当前投喂计划和运维',
-  futureWarning: 'pH值有轻微上升趋势，建议加强监测',
-  basis: 'DO最佳，pH良好，视频无异常'
+  mainAdvice: '',
+  analysisSummary: '',
+  operationAdvice: '',
+  futureWarning: '',
+  basis: ''
 })
+
+const isLoading = ref(false)
+const activeTab = ref('mainAdvice')
+
+const tabItems = [
+  { key: 'mainAdvice', label: '大模型建议', icon: 'M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z M14 2 14 8 20 8 M16 13 8 13 M16 17 8 17 M10 9 9 9 8 9' },
+  { key: 'analysisSummary', label: '分析摘要', icon: 'M18 20 18 10 M12 20 12 4 M6 20 6 14' },
+  { key: 'operationAdvice', label: '操作建议', icon: 'M12 12a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm9.4 3a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z' },
+  { key: 'futureWarning', label: '未来预警', icon: 'M12 12a10 10 0 1 0 0-20 10 10 0 0 0 0 20zm0 2-4 4 4 2' },
+  { key: 'basis', label: '依据', icon: 'M11 11a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm10 10-4.35-4.35' }
+]
 
 const getStatusText = (value, index) => {
   const item = chartDataList[index]
@@ -260,6 +255,139 @@ const getStatusClass = (value, index) => {
   if (status === '正常') return 'status-good'
   if (status === '异常') return 'status-danger'
   return 'status-warning'
+}
+
+const getStatusColor = (value, index) => {
+  const status = getStatusText(value, index)
+  if (status === '正常') return '#34D399'
+  if (status === '异常') return '#F87171'
+  return '#FBBF24'
+}
+
+// 获取最新十条数据
+const getLatestTenData = async () => {
+  try {
+    const response = await seaDataLatestTenService()
+    console.log('后端响应:', response)
+    // axios拦截器已经返回了result.data，所以response直接就是{code, message, data}
+    // response.data才是数据数组
+    if (response && response.data && Array.isArray(response.data)) {
+      seaDataList.value = response.data
+      console.log('获取到的数据:', response.data)
+      updateChartDataFromBackend(response.data)
+      console.log('更新后的时间:', window.seaDataTimes)
+      console.log('更新后的温度数据:', chartDataList[0].data)
+    } else {
+      console.log('响应数据格式不正确:', response)
+      generateMockData(10)
+    }
+  } catch (error) {
+    console.error('获取最新十条数据失败:', error)
+    generateMockData(10)
+  }
+}
+
+// 获取最新一条数据（用于仪表盘显示，不覆盖图表数据）
+const getLatestData = async () => {
+  try {
+    const response = await seaDataLatestService()
+    // axios拦截器已经返回了result.data
+    if (response && response.data) {
+      const data = response.data
+      latestSeaData.value = Array.isArray(data) ? data[0] : data
+      // 如果还没有后端数据，才更新图表
+      if (!window.seaDataTimes || window.seaDataTimes.length === 0) {
+        updateChartDataFromBackend(Array.isArray(data) ? data : [data])
+      }
+    }
+  } catch (error) {
+    console.error('获取最新一条数据失败:', error)
+    if (!window.seaDataTimes || window.seaDataTimes.length === 0) {
+      generateMockData(1)
+    }
+  }
+}
+
+// 获取AI研判建议数据
+const getAiSuggestion = async () => {
+  // 设置加载状态
+  isLoading.value = true
+  
+  try {
+    const response = await aiSuggestionService()
+    // axios拦截器已经返回了result.data
+    if (response && response.data) {
+      const data = response.data
+      // 更新AI建议数据
+      aiSuggestion.value = {
+        mainAdvice: data.mainAdvice || '',
+        analysisSummary: data.analysisSummary || '',
+        operationAdvice: data.operationAdvice || '',
+        futureWarning: data.futureWarning || '',
+        basis: data.basis || ''
+      }
+      // 更新决策状态
+      if (data.status) {
+        decisionStatus.value = data.status
+      }
+    }
+  } catch (error) {
+    console.error('获取AI研判建议失败:', error)
+    // 请求失败时显示默认提示
+    aiSuggestion.value = {
+      mainAdvice: '获取AI研判建议失败，请稍后重试。',
+      analysisSummary: '',
+      operationAdvice: '',
+      futureWarning: '',
+      basis: ''
+    }
+  } finally {
+    // 结束加载状态
+    isLoading.value = false
+  }
+}
+
+// 从后端数据更新图表数据（温度、盐度、溶解氧、pH值、浊度）
+const updateChartDataFromBackend = (data) => {
+  if (!data || data.length === 0) return
+
+  // 确保数据按时间正序排列（最早的数据在前，最新的数据在后），使最新数据显示在图表最右边
+  const sortedData = [...data].sort((a, b) => {
+    const timeA = a.sampleTime ? new Date(a.sampleTime) : new Date(0)
+    const timeB = b.sampleTime ? new Date(b.sampleTime) : new Date(0)
+    return timeA - timeB
+  })
+
+  const times = sortedData.map(item => {
+    if (item.sampleTime) {
+      const timeStr = item.sampleTime.toString()
+      if (timeStr.includes('T')) {
+        return timeStr.split('T')[1]?.substring(0, 5) || timeStr
+      }
+      if (timeStr.length >= 16) {
+        return timeStr.substring(11, 16)
+      }
+      return timeStr
+    }
+    return ''
+  }).filter(t => t)
+
+  if (times.length === 0) {
+    const now = new Date()
+    for (let i = reversedData.length - 1; i >= 0; i--) {
+      const time = new Date(now - i * 3600000)
+      times.push(time.getHours().toString().padStart(2, '0') + ':' + time.getMinutes().toString().padStart(2, '0'))
+    }
+  }
+
+  // 映射后端数据到图表：温度、氨氮、溶解氧、pH值、浊度
+  chartDataList[0].data = sortedData.map(item => parseFloat(item.temp) || 28)
+  chartDataList[1].data = sortedData.map(item => parseFloat(item.nh) || 0.1)
+  chartDataList[2].data = sortedData.map(item => parseFloat(item.o) || 7)
+  chartDataList[3].data = sortedData.map(item => parseFloat(item.ph) || 6.7)
+  chartDataList[4].data = sortedData.map(item => parseFloat(item.turbidity) || 1)
+
+  window.seaDataTimes = times
 }
 
 const generateMockData = (count) => {
@@ -310,7 +438,10 @@ const generateMockData = (count) => {
 
 const initLineCharts = () => {
   const count = 10
-  const times = generateMockData(count)
+  // 优先使用后端数据的时间，否则使用模拟数据
+  const times = window.seaDataTimes && window.seaDataTimes.length > 0 
+    ? window.seaDataTimes 
+    : generateMockData(count)
 
   charts.forEach(chart => chart.dispose())
   charts = []
@@ -328,7 +459,11 @@ const initLineCharts = () => {
         trigger: 'axis',
         backgroundColor: 'rgba(15, 23, 42, 0.9)',
         borderColor: 'rgba(59, 130, 246, 0.3)',
-        textStyle: { color: '#93C5FD' }
+        textStyle: { color: '#93C5FD' },
+        formatter: (params) => {
+          const param = params[0]
+          return `${param.name}<br/>${param.marker} ${param.value}${item.unit || ''}`
+        }
       },
       grid: {
         left: '10%',
@@ -349,28 +484,67 @@ const initLineCharts = () => {
       },
       yAxis: {
         type: 'value',
+        min: item.displayMin,
+        max: item.displayMax,
+        name: item.unit || '',
+        nameTextStyle: {
+          color: '#93C5FD',
+          fontSize: 10,
+          padding: [0, 40, 0, 0]
+        },
         axisLine: { show: true, lineStyle: { color: 'rgba(59, 130, 246, 0.3)' } },
         axisLabel: { 
           color: '#93C5FD', 
           fontSize: 9,
-          formatter: '{value}' + (item.unit || '')
+          formatter: (value) => {
+            // 根据数据类型设置不同精度
+            const key = item.key
+            if (key === 'nh') {
+              // 氨氮：保留3位小数
+              return value.toFixed(3)
+            } else if (key === 'temp' || key === 'o') {
+              // 温度、溶解氧：保留1位小数
+              return value.toFixed(1)
+            } else if (key === 'turbidity') {
+              // 浊度：保留1位小数
+              return value.toFixed(1)
+            } else if (key === 'ph') {
+              // pH值：保留1位小数
+              return value.toFixed(1)
+            }
+            return value.toString()
+          },
+          margin: 10
         },
+        axisTick: { show: true },
         splitLine: { lineStyle: { color: 'rgba(59, 130, 246, 0.1)' } }
       },
       series: [{
         type: 'line',
         smooth: true,
         data: item.data,
-        lineStyle: { width: 2, color: item.color },
+        lineStyle: { width: 2, color: '#34D399' },
         itemStyle: { 
-          color: item.color,
+          color: function(params) {
+            const value = params.value
+            // 根据阈值判断颜色
+            // 危险范围：超出最大/最小值边界
+            if (value < item.min || value > item.max) {
+              return '#f87171' // 红色：严重超标
+            }
+            // 预警范围：超出最优范围但未超出危险范围
+            else if (value < item.optimalMin || value > item.optimalMax) {
+              return '#fbbf24' // 黄色：偏高或偏低
+            }
+            return '#34D399' // 绿色：正常
+          },
           borderWidth: 2,
           borderColor: '#fff'
         },
         areaStyle: {
           color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-            { offset: 0, color: item.color + '40' },
-            { offset: 1, color: item.color + '05' }
+            { offset: 0, color: '#34D39940' },
+            { offset: 1, color: '#34D39905' }
           ])
         },
         symbol: 'circle',
@@ -384,7 +558,10 @@ const initLineCharts = () => {
 }
 
 const initGaugeCharts = () => {
-  generateMockData(1)
+  // 如果没有后端数据，使用模拟数据
+  if (!latestSeaData.value && !window.seaDataTimes) {
+    generateMockData(1)
+  }
 
   charts.forEach(chart => chart.dispose())
   charts = []
@@ -396,14 +573,17 @@ const initGaugeCharts = () => {
     const chart = echarts.init(dom)
     charts.push(chart)
 
-    const currentValue = parseFloat(item.data[0])
+    // 读取最新的数据（数组最后一个元素）
+    const currentValue = parseFloat(item.data[item.data.length - 1] || item.data[0])
     
     let gaugeColor = '#34d399'
-    if (currentValue < item.optimalMin || currentValue > item.optimalMax) {
-      gaugeColor = '#fbbf24'
-    }
-    if (currentValue < item.min * 1.05 || currentValue > item.max * 0.95) {
+    // 危险范围：超出最大/最小值边界
+    if (currentValue < item.min || currentValue > item.max) {
       gaugeColor = '#f87171'
+    }
+    // 预警范围：超出最优范围但未超出危险范围
+    else if (currentValue < item.optimalMin || currentValue > item.optimalMax) {
+      gaugeColor = '#fbbf24'
     }
 
     const option = {
@@ -426,8 +606,8 @@ const initGaugeCharts = () => {
           roundCap: true,
           itemStyle: {
             color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
-              { offset: 0, color: item.color + '80' },
-              { offset: 1, color: item.color }
+              { offset: 0, color: gaugeColor + '80' },
+              { offset: 1, color: gaugeColor }
             ])
           }
         },
@@ -532,18 +712,27 @@ const initVideo = async () => {
   }
 }
 
-watch(aiEnabled, (newVal) => {
+watch(aiEnabled, async (newVal) => {
   if (!newVal) {
     decisionStatus.value = ''
   } else {
-    const statuses = ['good', 'warning', 'danger']
-    decisionStatus.value = statuses[Math.floor(Math.random() * 3)]
+    // 开启时从后端获取AI研判建议
+    await getAiSuggestion()
   }
 })
 
 onMounted(async () => {
   updateTime()
   timeInterval = setInterval(updateTime, 1000)
+
+  // 获取后端数据（温度、盐度、溶解氧、pH值、浊度）
+  await getLatestTenData()
+  await getLatestData()
+  
+  // AI研判建议数据只在开启时请求
+  if (aiEnabled.value) {
+    await getAiSuggestion()
+  }
 
   await nextTick()
   initCharts()
@@ -613,9 +802,9 @@ const handleResize = () => {
 
   .main-grid {
     display: grid;
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: 3fr 2fr;
     gap: 20px;
-    min-height: calc(100vh - 250px);
+    min-height: calc(100vh - 200px);
   }
 }
 
@@ -709,11 +898,12 @@ const handleResize = () => {
         width: 40px;
         height: 40px;
         margin-bottom: 8px;
+        color: #93C5FD;
         
         svg {
           width: 100%;
           height: 100%;
-          color: #93C5FD;
+          color: inherit;
           filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
           transition: all 0.3s ease;
         }
@@ -782,6 +972,7 @@ const handleResize = () => {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  height: calc(100vh - 160px);
 }
 
 .video-panel {
@@ -951,6 +1142,9 @@ const handleResize = () => {
   border-radius: var(--radius-lg);
   overflow: hidden;
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
   transition: all 0.3s ease;
 
   &.disabled {
@@ -981,10 +1175,11 @@ const handleResize = () => {
       }
 
       h3 {
-        color: #67e8f9;
-        font-size: 15px;
+        color: #a5f3fc;
+        font-size: 18px;
         font-weight: 600;
         margin: 0;
+        text-shadow: 0 0 10px rgba(103, 232, 249, 0.5);
       }
     }
 
@@ -995,9 +1190,9 @@ const handleResize = () => {
       .status-item {
         display: flex;
         align-items: center;
-        gap: 6px;
-        font-size: 12px;
-        color: #9ca3af;
+        gap: 8px;
+        font-size: 14px;
+        color: #67e8f9;
         transition: all 0.3s ease;
         opacity: 0.5;
 
@@ -1030,8 +1225,41 @@ const handleResize = () => {
 
   .decision-content {
     padding: 16px;
-    max-height: 300px;
+    flex: 1;
     overflow-y: auto;
+    box-sizing: border-box;
+    min-height: 0;
+    padding-right: 22px;
+
+    .loading-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      min-height: 200px;
+    }
+
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(59, 130, 246, 0.2);
+      border-top-color: #06b6d4;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    .loading-text {
+      margin-top: 16px;
+      color: #93c5fd;
+      font-size: 14px;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
 
     &::-webkit-scrollbar {
       width: 6px;
@@ -1046,43 +1274,119 @@ const handleResize = () => {
       border-radius: 3px;
     }
 
-    .decision-section {
-      margin-bottom: 16px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+    &::-webkit-scrollbar-thumb:hover {
+      background: rgba(59, 130, 246, 0.6);
+    }
 
-      &:last-child {
-        border-bottom: none;
-        margin-bottom: 0;
+    .tabs-bar {
+      display: flex;
+      justify-content: space-between;
+      gap: 6px;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(59, 130, 246, 0.15);
+    }
+
+    .tab-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      padding: 8px 6px;
+      background: rgba(10, 14, 26, 0.6);
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      border-radius: 6px;
+      color: #93c5fd;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      flex: 1;
+      min-width: 50px;
+      max-width: 70px;
+
+      &:hover:not(.disabled) {
+        background: rgba(59, 130, 246, 0.2);
+        border-color: rgba(59, 130, 246, 0.4);
+        transform: translateY(-1px);
       }
 
-      .section-header {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        margin-bottom: 8px;
-
-        .section-icon {
-          width: 18px;
-          height: 18px;
-          flex-shrink: 0;
-        }
-
-        h4 {
-          color: #67e8f9;
-          font-size: 13px;
-          font-weight: 600;
-          margin: 0;
-        }
+      &.active {
+        background: rgba(6, 182, 212, 0.2);
+        border-color: #06b6d4;
+        color: #06b6d4;
+        box-shadow: 0 0 8px rgba(6, 182, 212, 0.3);
       }
 
-      p {
-        color: #93c5fd;
-        font-size: 13px;
-        line-height: 1.6;
+      &.disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+
+      .tab-icon {
+        width: 16px;
+        height: 16px;
+      }
+
+      .tab-label {
+        font-size: 12px;
+        font-weight: 500;
+        text-align: center;
+        color: #67e8f9;
+      }
+    }
+
+    .content-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .content-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .content-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+
+      .content-icon {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+      }
+
+      h4 {
+        color: #a5f3fc;
+        font-size: 16px;
+        font-weight: 600;
         margin: 0;
-        padding-left: 26px;
+        text-shadow: 0 0 8px rgba(103, 232, 249, 0.4);
       }
+    }
+
+    .content-text {
+      color: #67e8f9;
+      font-size: 15px;
+      line-height: 1.8;
+      margin: 0;
+      padding: 14px 16px;
+      background: rgba(10, 14, 26, 0.5);
+      border-radius: 8px;
+      border: 1px solid rgba(59, 130, 246, 0.1);
+      flex: 1;
+    }
+
+    .empty-content {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #6b7280;
+      font-size: 13px;
     }
   }
 
@@ -1112,17 +1416,6 @@ const handleResize = () => {
       }
     }
   }
-}
-
-.footer-info {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 20px;
-  margin-top: 20px;
-  border-top: 1px solid rgba(59, 130, 246, 0.2);
-  color: #6b7280;
-  font-size: 12px;
 }
 
 @keyframes pulse-recording {

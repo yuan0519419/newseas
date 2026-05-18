@@ -52,6 +52,68 @@ const hasShowedWarning = ref(false); // 用于控制提示框只显示一次
 
 
 
+// 金鲳鱼养殖水质阈值配置
+const thresholds = {
+  o: { normal: [6.5, 8], warning: [5.85, 6.5, 8, 8.8], danger: [0, 5.85, 8.8, 15] },      // 溶解氧
+  nh: { normal: [0, 0.2], warning: [0.2, 0.22], danger: [0.22, 1] },                      // 氨氮
+  no: { normal: [0, 0.1], warning: [0.1, 0.3], danger: [0.3, 0.5] },                      // 亚硝酸氮
+  temp: { normal: [25, 30], warning: [24, 25, 30, 31], danger: [0, 24, 31, 40] },        // 水温
+  salinity: { normal: [20, 30], warning: [15, 20, 30, 35], danger: [10, 15, 35, 40] },    // 盐度
+  turbidity: { normal: [0, 10], warning: [10, 11], danger: [11, 25] },                    // 浊度
+  ph: { normal: [6.5, 9.0], warning: [6.5, 7.5, 8.5, 9.0], danger: [0, 6.5, 9.0, 14] },   // pH值
+  chl: { normal: [5, 20], warning: [0, 5, 20, 50], danger: [50, 100] },                  // 叶绿素a
+  currVel: { normal: [5, 20], warning: [0, 5, 20, 30], danger: [30, 50] },                // 洋流流速
+  orp: { normal: [300, 500], warning: [200, 300, 500, 600], danger: [100, 200, 600, 700] } // 氧化还原电位
+}
+
+// 获取参数的y轴范围配置
+const getAxisRange = (dataKey) => {
+  const ranges = {
+    o: { min: 0, max: 15 },           // 溶解氧
+    nh: { min: 0, max: 0.5 },         // 氨氮
+    no: { min: 0, max: 0.5 },         // 亚硝酸氮
+    temp: { min: 20, max: 40 },       // 水温
+    salinity: { min: 10, max: 40 },   // 盐度
+    turbidity: { min: 0, max: 25 },   // 浊度
+    ph: { min: 0, max: 14 },          // pH值（最大值为14）
+    chl: { min: 0, max: 100 },        // 叶绿素a
+    currVel: { min: 0, max: 50 },     // 洋流流速
+    orp: { min: 100, max: 700 }       // 氧化还原电位
+  }
+  return ranges[dataKey] || { min: 0, max: 100 }
+}
+
+// 获取数据点颜色状态
+const getPointColor = (value, dataKey) => {
+  const config = thresholds[dataKey]
+  if (!config) return '#34D399' // 默认绿色
+  
+  // 危险范围：超出最大/最小值边界
+  if (config.danger) {
+    if (config.danger.length === 4) {
+      if (value < config.danger[0] || value > config.danger[3]) return '#ef4444' // 红色-危险
+    } else if (config.danger.length === 2) {
+      if (value > config.danger[0]) return '#ef4444' // 红色-危险（只有上限）
+    }
+  }
+  
+  // 预警范围：超出最优范围但未超出危险范围
+  if (config.warning) {
+    if (config.warning.length === 4) {
+      if ((value >= config.warning[0] && value < config.warning[1]) || 
+          (value > config.warning[2] && value <= config.warning[3])) {
+        return '#eab308' // 黄色-预警
+      }
+    } else if (config.warning.length === 2) {
+      if (value >= config.warning[0] && value <= config.warning[1]) {
+        return '#eab308' // 黄色-预警
+      }
+    }
+  }
+  
+  return '#34D399' // 绿色-正常
+}
+
 const sea = ref([
   {
     id: 163,
@@ -136,39 +198,58 @@ const initData = (realData, predictedData, domId, title, dataKey) => {
     myChart = echarts.init(lineDom);
   }
 
-  // 排序和截取数据
-  const sortedRealData = realData.sort((a, b) => new Date(a.sampleTime) - new Date(b.sampleTime));
-  const sortedPredictedData = predictedData.sort((a, b) => new Date(a.sampleTime) - new Date(b.sampleTime));
+  // 排序和截取数据（先复制数组避免修改原数据）
+  // 预测值和真实值都按时间降序排序，取相同条数的最新数据
+  const sortedRealData = [...realData].sort((a, b) => new Date(b.sampleTime) - new Date(a.sampleTime));
+  const sortedPredictedData = [...predictedData].sort((a, b) => new Date(b.sampleTime) - new Date(a.sampleTime));
+  
+  // 取两者中较小的长度，确保数据条数一致
+  const dataLength = Math.min(sortedRealData.length, sortedPredictedData.length);
+  const latestRealData = sortedRealData.slice(0, dataLength);
+  const latestPredictedData = sortedPredictedData.slice(0, dataLength);
+  
+  // 再按时间升序排列用于图表显示（从旧到新）
+  latestRealData.sort((a, b) => new Date(a.sampleTime) - new Date(b.sampleTime));
+  latestPredictedData.sort((a, b) => new Date(a.sampleTime) - new Date(b.sampleTime));
 
   // 指定图表的配置项和数据
   const option = {
     title: {
       text: title,
       textStyle: {
-        fontSize: 16,
+        fontSize: 20,
         fontWeight: 'bold',
         color: '#67e8f9'
       },
-      padding: [0, 0, 15, 0]
+      padding: [0, 0, 20, 0]
     },
     tooltip: {
       trigger: 'axis',
       axisPointer: {
         type: 'shadow'
       },
-      backgroundColor: 'rgba(255, 255, 255, 0.9)',
+      backgroundColor: 'rgba(10, 14, 26, 0.95)',
       borderColor: '#67e8f9',
       borderWidth: 1,
-      padding: 10,
-      textStyle: { color: '#333' },
+      padding: 12,
+      textStyle: { color: '#fff', fontSize: 14 },
       formatter: function(params) {
-        return `${params[0].name}<br/>${params[0].seriesName}: ${params[0].data.toFixed(2)}<br/>${params[1].seriesName}: ${params[1].data.toFixed(2)}`;
+        let result = `<div style="font-weight: bold; margin-bottom: 8px; color: #67e8f9;">${params[0].name}</div>`;
+        params.forEach(param => {
+          const value = typeof param.data === 'object' ? param.data.value : param.data;
+          const color = typeof param.data === 'object' && param.data.itemStyle ? param.data.itemStyle.color : '#34D399';
+          result += `<div style="display: flex; align-items: center; margin: 4px 0;">
+            <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background-color: ${color}; margin-right: 8px;"></span>
+            <span style="color: ${color};">${param.seriesName}: ${value.toFixed(2)}</span>
+          </div>`;
+        });
+        return result;
       }
     },
     legend: {
       data: ['真实值', '预测值'],
-      top: 30,
-      textStyle: { color: '#67e8f9' }
+      top: 35,
+      textStyle: { color: '#67e8f9', fontSize: 14 }
     },
     grid: {
       left: '3%',
@@ -177,38 +258,59 @@ const initData = (realData, predictedData, domId, title, dataKey) => {
       containLabel: true
     },
     xAxis: {
-      data: sortedRealData.map(item => item.sampleTime),
+      data: latestRealData.map(item => item.sampleTime),
       axisLabel: {
         formatter: (value) => format.formatTime('MM-dd hh:mm', value),
         color: '#67e8f9',
         rotate: 30,
-        interval: 2
+        interval: 2,
+        fontSize: 14
       },
-      axisLine: { lineStyle: { color: '#67e8f9' } }
+      axisLine: { lineStyle: { color: '#67e8f9', width: 2 } },
+      axisTick: { lineStyle: { color: '#67e8f9', width: 2 } }
     },
     yAxis: {
-      axisLabel: { color: '#67e8f9' },
-      axisLine: { lineStyle: { color: '#67e8f9' } },
-      splitLine: { lineStyle: { color: 'rgba(6, 182, 212, 0.2)' } }
+      min: getAxisRange(dataKey).min,
+      max: getAxisRange(dataKey).max,
+      axisLabel: { color: '#67e8f9', fontSize: 14 },
+      axisLine: { lineStyle: { color: '#67e8f9', width: 2 } },
+      axisTick: { lineStyle: { color: '#67e8f9', width: 2 } },
+      splitLine: { lineStyle: { color: 'rgba(6, 182, 212, 0.2)', width: 2 } }
     },
     series: [
       {
         name: '真实值',
         type: 'line',
-        data: sortedRealData.map(item => item[dataKey]),
+        data: latestRealData.map(item => {
+          const value = item[dataKey]
+          const color = getPointColor(value, dataKey)
+          const isWarning = color === '#eab308'
+          const isDanger = color === '#ef4444'
+          return {
+            value: value,
+            itemStyle: {
+              color: color,
+              borderWidth: isWarning || isDanger ? 3 : 2,
+              borderColor: '#fff',
+              shadowBlur: isDanger ? 15 : (isWarning ? 10 : 0),
+              shadowColor: color,
+              shadowOffsetY: 0
+            }
+          }
+        }),
         lineStyle: { 
           color: '#0e7490',
           width: 2
         },
-        itemStyle: {
-          color: '#0e7490',
-          borderWidth: 2,
-          borderColor: '#fff'
-        },
         symbol: 'circle',
-        symbolSize: 6,
+        symbolSize: function(params) {
+          const itemStyle = params.data && params.data.itemStyle
+          if (itemStyle && itemStyle.color === '#ef4444') return 12
+          if (itemStyle && itemStyle.color === '#eab308') return 10
+          return 6
+        },
         emphasis: {
-          symbolSize: 8
+          symbolSize: 14
         },
         areaStyle: {
           color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
@@ -220,7 +322,7 @@ const initData = (realData, predictedData, domId, title, dataKey) => {
       {
         name: '预测值',
         type: 'line',
-        data: sortedPredictedData.map(item => item[dataKey]),
+        data: latestPredictedData.map(item => item[dataKey]),
         lineStyle: { 
           color: '#00c4ff',
           type: 'dashed',
@@ -317,23 +419,23 @@ const DataRefresh = async () => {
 
 .chart-container {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--spacing-lg);
-  padding: var(--spacing-xl);
-  max-width: 1600px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-xl);
+  padding: var(--spacing-2xl);
+  max-width: 1800px;
   margin: 0 auto;
 }
 
 .chart-container > div {
   background: var(--tech-blue-800);
   border-radius: var(--radius-lg);
-  padding: var(--spacing-lg);
+  padding: var(--spacing-xl);
   border: var(--border-tech);
   box-shadow: var(--shadow-md);
   position: relative;
   overflow: hidden;
   transition: all var(--transition-base);
-  height: 380px;
+  height: 450px;
   
   &::before {
     content: '';
@@ -391,26 +493,32 @@ const DataRefresh = async () => {
 // 按钮样式优化
 :deep(.el-button) {
   &.el-button--primary {
-    background: var(--gradient-primary);
-    border-color: transparent;
-    color: var(--tech-blue-900);
+    background: linear-gradient(135deg, #22d3ee 0%, #06b6d4 100%);
+    border: 1px solid rgba(6, 182, 212, 0.5);
+    color: #0e4a55;
     font-weight: 600;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(6, 182, 212, 0.4);
     
     &:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--glow-md);
+      background: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%);
+      border-color: rgba(6, 182, 212, 0.8);
+      box-shadow: 0 0 20px rgba(6, 182, 212, 0.6);
     }
   }
   
   &.el-button--success {
-    background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
-    border-color: transparent;
-    color: white;
+    background: linear-gradient(135deg, #22d3ee 0%, #06b6d4 100%);
+    border: 1px solid rgba(6, 182, 212, 0.5);
+    color: #0e4a55;
     font-weight: 600;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(6, 182, 212, 0.4);
     
     &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+      background: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%);
+      border-color: rgba(6, 182, 212, 0.8);
+      box-shadow: 0 0 20px rgba(6, 182, 212, 0.6);
     }
   }
 }

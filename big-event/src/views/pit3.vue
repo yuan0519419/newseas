@@ -663,18 +663,19 @@ onUnmounted(() => {
 
 .reef-info {
   background: rgba(17, 24, 39, 0.8); /* 深色背景 */
-  color: var(--tech-blue-300); /* 浅蓝色文字 */
+  color: var(--tech-cyan-300); /* 青色文字 */
   padding: 10px 20px; /* 增加内边距，使卡片更宽 */
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
   text-align: center;
   width: 250px;
   /* 独立定位信息卡片，不影响指示灯 */
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  border: 1px solid rgba(59, 130, 246, 0.4);
+  border: 1px solid rgba(6, 182, 212, 0.4);
   backdrop-filter: blur(10px);
+  z-index: 20; /* 确保卡片在视频标题之上 */
 }
 
 /* 鱼礁1的信息卡片 - 固定在指示灯右侧，进一步调近距离 */
@@ -689,9 +690,9 @@ onUnmounted(() => {
 
 .reef-info h3 {
   margin: 0 0 10px 0;
-  color: var(--tech-blue-600);
+  color: var(--tech-cyan-400);
   font-size: 18px;
-  text-shadow: 0 0 5px rgba(59, 130, 246, 0.5);
+  text-shadow: 0 0 5px rgba(6, 182, 212, 0.5);
 }
 
 .fish-detection-info {
@@ -700,26 +701,26 @@ onUnmounted(() => {
 }
 
 .reef-info .fish-info {
-  color: var(--tech-blue-400);
+  color: var(--tech-cyan-400);
   font-weight: bold;
   font-size: 18px;
   margin-bottom: 5px;
 }
 
 .reef-info .time-info {
-  color: var(--tech-blue-500);
+  color: var(--tech-cyan-300);
   font-size: 14px;
 }
 
 .no-detection {
   margin: 0;
-  color: #999;
+  color: var(--tech-cyan-400);
   font-size: 14px;
 }
 
 /* 保留鱼礁信息样式 */
 .fish-info {
-  color: var(--tech-blue-400);
+  color: var(--tech-cyan-400);
   font-weight: bold;
   font-size: 16px;
   margin-bottom: 8px;
@@ -754,51 +755,95 @@ onUnmounted(() => {
 .history-records-container {
   max-height: 500px;
   overflow-y: auto;
+  background: rgba(10, 14, 26, 0.95);
+  padding: 10px;
+  border-radius: 8px;
 }
 
 .no-history {
   text-align: center;
   padding: 40px 0;
-  color: var(--tech-blue-400);
+  color: var(--tech-cyan-400);
   font-size: 14px;
 }
 
 /* 表格样式优化 */
-.history-records-container .el-table {
+.history-records-container :deep(.el-table) {
   font-size: 14px;
-  background: rgba(17, 24, 39, 0.6) !important;
-  border: var(--border-tech) !important;
-  
-  th {
-    background: var(--tech-blue-800) !important;
-    color: var(--tech-blue-600) !important;
-    font-weight: 600;
-    border-bottom: 1px solid rgba(59, 130, 246, 0.3) !important;
-    
-    .cell {
-      color: var(--tech-blue-600) !important;
-      font-weight: 600;
-    }
-  }
-  
-  tr {
-    background: rgba(17, 24, 39, 0.4) !important;
-    color: var(--tech-blue-400) !important;
-    
-    &:hover > td {
-      background: rgba(59, 130, 246, 0.1) !important;
-    }
-    
-    td {
-      background: transparent !important;
-      border-bottom: 1px solid rgba(59, 130, 246, 0.1) !important;
-      color: var(--tech-blue-300) !important;
-      
-      .cell {
-        color: var(--tech-blue-300) !important;
-      }
-    }
-  }
+  background: rgba(10, 14, 26, 0.9) !important;
+  border: 1px solid rgba(59, 130, 246, 0.3) !important;
+  border-radius: 8px;
+}
+
+.history-records-container :deep(.el-table__header-wrapper) {
+  background: transparent !important;
+}
+
+.history-records-container :deep(.el-table__body-wrapper) {
+  background: transparent !important;
+}
+
+.history-records-container :deep(.el-table__header) {
+  background: rgba(30, 41, 59, 0.9) !important;
+}
+
+.history-records-container :deep(.el-table__header th) {
+  background: rgba(30, 41, 59, 0.9) !important;
+  color: var(--tech-cyan-400) !important;
+  font-weight: 600;
+  border-bottom: 1px solid rgba(59, 130, 246, 0.4) !important;
+}
+
+.history-records-container :deep(.el-table__header th .cell) {
+  color: var(--tech-cyan-400) !important;
+  font-weight: 600;
+}
+
+.history-records-container :deep(.el-table__body tr) {
+  background: rgba(15, 23, 42, 0.8) !important;
+  color: var(--tech-cyan-300) !important;
+}
+
+.history-records-container :deep(.el-table__body tr:hover > td) {
+  background: rgba(59, 130, 246, 0.15) !important;
+}
+
+.history-records-container :deep(.el-table__row--striped) {
+  background: rgba(23, 37, 84, 0.6) !important;
+}
+
+.history-records-container :deep(.el-table__body td) {
+  background: transparent !important;
+  border-bottom: 1px solid rgba(59, 130, 246, 0.15) !important;
+  color: var(--tech-cyan-300) !important;
+}
+
+.history-records-container :deep(.el-table__body td .cell) {
+  color: var(--tech-cyan-300) !important;
+}
+
+/* 弹窗背景暗色 */
+:deep(.el-dialog) {
+  background: rgba(10, 14, 26, 0.95) !important;
+  border: 1px solid rgba(59, 130, 246, 0.3) !important;
+}
+
+:deep(.el-dialog__body) {
+  background: rgba(10, 14, 26, 0.95) !important;
+}
+
+:deep(.el-dialog__header) {
+  background: rgba(15, 23, 42, 0.95) !important;
+  border-bottom: 1px solid rgba(59, 130, 246, 0.3) !important;
+}
+
+:deep(.el-dialog__title) {
+  color: var(--tech-cyan-400) !important;
+}
+
+:deep(.el-dialog__footer) {
+  background: rgba(15, 23, 42, 0.95) !important;
+  border-top: 1px solid rgba(59, 130, 246, 0.3) !important;
 }
 
 /* 鱼礁视频播放器样式 */
@@ -811,10 +856,10 @@ onUnmounted(() => {
 .video-title {
   font-size: 14px;
   font-weight: 600;
-  color: var(--tech-blue-600);
+  color: #000000;
   margin-bottom: 10px;
   text-align: center;
-  text-shadow: 0 0 5px rgba(59, 130, 246, 0.5);
+  text-shadow: none;
 }
 
 .video-wrapper {
@@ -850,14 +895,14 @@ onUnmounted(() => {
 
 /* 按钮样式 */
 :deep(.el-button--primary) {
-  background: var(--gradient-primary);
-  border-color: transparent;
-  color: var(--tech-blue-900);
+  background: var(--tech-cyan-400);
+  border-color: var(--tech-cyan-400);
+  color: #000000;
   font-weight: 600;
   
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--glow-md);
+    background: var(--tech-cyan-300);
+    border-color: var(--tech-cyan-300);
   }
 }
 

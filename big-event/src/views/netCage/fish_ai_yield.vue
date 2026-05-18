@@ -11,7 +11,7 @@
             <video 
               ref="videoRef1" width="100%" height="auto" controls autoplay loop muted
             >
-              <source src="/src/assets/fish.mp4" type="video/mp4">
+              <source src="/src/assets/高清鱼.mp4" type="video/mp4">
               您的浏览器不支持视频播放
             </video>
           </div>
@@ -24,7 +24,7 @@
               ref="videoRef2" 
                width="100%" height="auto" controls autoplay loop muted
             >
-              <source src="/src/assets/fish.mp4" type="video/mp4">
+              <source src="/src/assets/高清鱼.mp4" type="video/mp4">
               您的浏览器不支持视频播放
             </video>
           </div>

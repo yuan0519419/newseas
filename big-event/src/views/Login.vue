@@ -101,8 +101,8 @@
     <!-- 页面底部技术支持信息 -->
     <div class="page-footer">
       <div class="tech-support">
-        <p>广东海洋大学 · 海洋科学与技术学院</p>
-        <p class="version">Tech Vision System v2.0</p>
+        <p>广东海洋大学</p>
+        <p class="version">GDOU</p>
       </div>
     </div>
 
@@ -449,14 +449,14 @@ const clearRegisterData = () => {
   text-align: center;
   
   p {
-    font-size: 14px;
+    font-size: 18px;
     color: var(--tech-silver-400);
     margin-bottom: var(--spacing-xs);
   }
   
   .version {
-    font-size: 12px;
-    color: rgba(156, 163, 175, 0.6);
+    font-size: 16px;
+    color: rgba(156, 163, 175, 0.8);
   }
 }
 

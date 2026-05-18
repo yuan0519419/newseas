@@ -15,7 +15,6 @@
           </div>
           <div class="logo-text">
             <h1 class="system-name">南海智慧牧场</h1>
-            <p class="system-name-en">Ocean Ranch Monitor</p>
           </div>
         </div>
       </div>
@@ -55,7 +54,7 @@
         <div class="menu-section">
           <div class="menu-section-title">
             <span class="section-icon">
-              <VideoCamera />
+              <MagicStick />
             </span>
             养殖监控
           </div>
@@ -71,7 +70,7 @@
           </el-menu-item>
 
           <el-menu-item index="/eqp">
-            <el-icon class="menu-icon"><Monitor /></el-icon>
+            <el-icon class="menu-icon"><ChatDotRound /></el-icon>
             <span>设备维护</span>
           </el-menu-item>
 
@@ -90,12 +89,12 @@
           </div>
           
           <el-menu-item index="/pit">
-            <el-icon class="menu-icon"><CreditCard /></el-icon>
+            <el-icon class="menu-icon"><Crop /></el-icon>
             <span>鱼类监测系统</span>
           </el-menu-item>
 
           <el-menu-item index="/pit3">
-            <el-icon class="menu-icon"><CreditCard /></el-icon>
+            <el-icon class="menu-icon"><VideoCamera /></el-icon>
             <span>PIT游泳动物跟踪遥测</span>
           </el-menu-item>
         </div>
@@ -129,9 +128,7 @@
       <el-header class="tech-header">
         <div class="header-left">
           <div class="breadcrumb">
-            <span class="breadcrumb-item">首页</span>
-            <span class="breadcrumb-separator">/</span>
-            <span class="breadcrumb-item active">{{ $route.name || '数据监测' }}</span>
+            <a href="http://47.98.252.54/sea" target="_blank" class="breadcrumb-btn">数字大屏</a>
           </div>
         </div>
         
@@ -170,9 +167,7 @@
       <!-- 科技风页脚 -->
       <el-footer class="tech-footer">
         <div class="footer-content">
-          <span>广东海洋大学 · 海大识鱼团队</span>
-          <span class="footer-divider">|</span>
-          <span>Tech Vision System v2.0</span>
+          <span class="footer-text">广东海洋大学 · 海大识鱼团队</span>
         </div>
       </el-footer>
     </el-container>
@@ -460,14 +455,16 @@ const handleCommand = (command) => {
   
   .university-info {
     p {
-      font-size: 13px;
-      color: var(--tech-silver-400);
-      margin-bottom: 2px;
+      font-size: 15px;
+      color: var(--tech-cyan-400);
+      margin-bottom: 4px;
+      font-weight: 500;
     }
     
     .college {
-      font-size: 12px;
-      color: rgba(156, 163, 175, 0.6);
+      font-size: 14px;
+      color: var(--tech-cyan-400);
+      font-weight: 500;
     }
   }
 }
@@ -580,6 +577,23 @@ const handleCommand = (command) => {
         color: var(--tech-silver-400);
         opacity: 0.5;
       }
+
+      .breadcrumb-btn {
+        color: var(--tech-cyan-400);
+        font-weight: 600;
+        padding: 6px 12px;
+        background: rgba(59, 130, 246, 0.15);
+        border: 1px solid rgba(59, 130, 246, 0.4);
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        transition: all var(--transition-fast);
+        text-decoration: none;
+        
+        &:hover {
+          background: rgba(59, 130, 246, 0.25);
+          border-color: var(--tech-cyan-400);
+        }
+      }
     }
   }
   
@@ -675,8 +689,12 @@ const handleCommand = (command) => {
     display: flex;
     align-items: center;
     gap: var(--spacing-md);
-    font-size: 13px;
-    color: var(--tech-silver-400);
+    
+    .footer-text {
+      font-size: 15px;
+      color: var(--tech-cyan-400);
+      font-weight: 500;
+    }
     
     .footer-divider {
       color: var(--tech-silver-400);
